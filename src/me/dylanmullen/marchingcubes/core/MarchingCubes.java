@@ -41,8 +41,16 @@ public class MarchingCubes implements Runnable
 		while (!GLFW.glfwWindowShouldClose(this.window.getWindowReference()))
 		{
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			
+			GL11.glColor3f(1f, 1f, 0f);
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2f(-0.5f, .5f);
+			GL11.glVertex2f(-.5f, -.5f);
+			GL11.glVertex2f(.5f, -.5f);
+			GL11.glVertex2f(.5f, .5f);
+			GL11.glEnd();
+			
 			GLFW.glfwSwapBuffers(this.window.getWindowReference());
-
 			GLFW.glfwPollEvents();
 		}
 		running = false;
