@@ -22,15 +22,13 @@ public class MarchingCubeGenerator
 		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++)
 			{
-				points[x + y * width] = (double) Math.round(generator.generateSmoothNoise(x, y) * 100) / 100;
+				points[x + y * width] = generator.generateSmoothNoise(x, y);
 			}
-		print();
 	}
 
-	private void print()
+	public boolean isActive(int x, int y)
 	{
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++)
-				System.out.print(points[x + y * width] + "\t" + ((width - 1 == x) ? "\n" : ""));
+		return points[x + y * width] >= 0;
 	}
+
 }

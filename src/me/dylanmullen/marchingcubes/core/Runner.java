@@ -1,7 +1,6 @@
 package me.dylanmullen.marchingcubes.core;
 
 import me.dylanmullen.marchingcubes.generator.MarchingCubeGenerator;
-import me.dylanmullen.marchingcubes.math.Matrix4F;
 
 public class Runner
 {
