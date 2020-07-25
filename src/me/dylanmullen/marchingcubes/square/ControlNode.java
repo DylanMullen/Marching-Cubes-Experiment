@@ -31,7 +31,7 @@ public class ControlNode extends Node
 
 	public void setActive()
 	{
-		this.active = !active;
+		this.active = true;
 	}
 
 }

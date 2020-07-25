@@ -1,5 +1,6 @@
 package me.dylanmullen.marchingcubes.square;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,6 +20,12 @@ public class NodeManager
 			instance = new NodeManager();
 
 		return instance;
+	}
+
+	public NodeManager()
+	{
+		this.cachedControlNodes = new ArrayList<ControlNode>();
+		this.cachedNodes = new ArrayList<Node>();
 	}
 
 	public Node createNode(Vector2F position)

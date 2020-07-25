@@ -8,7 +8,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import me.dylanmullen.marchingcubes.generator.MarchingCubeGenerator;
+import me.dylanmullen.marchingcubes.graphics.Shader;
 import me.dylanmullen.marchingcubes.graphics.VAO;
+import me.dylanmullen.marchingcubes.math.Matrix4F;
+import me.dylanmullen.marchingcubes.math.Vector2F;
 import me.dylanmullen.marchingcubes.util.BufferUtil;
 import me.dylanmullen.marchingcubes.window.Window;
 
@@ -39,8 +43,8 @@ public class MarchingCubes implements Runnable
 	public void run()
 	{
 		init();
-
 		GL.createCapabilities();
+
 		float[] vertices =
 		{
 				// Left bottom triangle
@@ -49,19 +53,26 @@ public class MarchingCubes implements Runnable
 				0.5f, -0.5f, 0f, 0.5f, 0.5f, 0f, -0.5f, 0.5f, 0f
 		};
 
-		this.test = new VAO();
-		test.bind();
-		test.storeData(0, BufferUtil.toFloatBuffer(vertices));
-		test.unbind();
+		MarchingCubeGenerator gen = new MarchingCubeGenerator(40, 40);
+		gen.generate();
+		this.test = gen.generateMesh();
 
 		GL11.glClearColor(0f, 0f, 0f, 1f);
 
+		Shader shader = new Shader("test.vert", "test.frag");
+		float x = -1;
+		float y = -1;
 		while (!GLFW.glfwWindowShouldClose(this.window.getWindowReference()))
 		{
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
+			shader.start();
+			shader.setTransformationMatrix(Matrix4F.transformation(new Vector2F(x, y)));
+			;
 			drawVAO(vertices.length / 3);
+			shader.stop();
 
+			y -= 0.1;
 			GLFW.glfwSwapBuffers(this.window.getWindowReference());
 			GLFW.glfwPollEvents();
 		}
