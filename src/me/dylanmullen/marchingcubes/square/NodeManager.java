@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import me.dylanmullen.marchingcubes.math.Vector2F;
+import org.joml.Vector2f;
 
 public class NodeManager
 {
@@ -28,7 +28,7 @@ public class NodeManager
 		this.cachedNodes = new ArrayList<Node>();
 	}
 
-	public Node createNode(Vector2F position)
+	public Node createNode(Vector2f position)
 	{
 		if (isNode(position))
 			return getNode(position);
@@ -37,12 +37,12 @@ public class NodeManager
 		return node;
 	}
 
-	public boolean isNode(Vector2F position)
+	public boolean isNode(Vector2f position)
 	{
 		return getNode(position) != null;
 	}
 
-	public Node getNode(Vector2F position)
+	public Node getNode(Vector2f position)
 	{
 		try
 		{
@@ -53,7 +53,7 @@ public class NodeManager
 		}
 	}
 
-	public ControlNode createControlNode(Vector2F position)
+	public ControlNode createControlNode(Vector2f position)
 	{
 		if (isControlNode(position))
 			return getControlNode(position);
@@ -62,12 +62,12 @@ public class NodeManager
 		return node;
 	}
 
-	public boolean isControlNode(Vector2F position)
+	public boolean isControlNode(Vector2f position)
 	{
 		return getControlNode(position) != null;
 	}
 
-	public ControlNode getControlNode(Vector2F position)
+	public ControlNode getControlNode(Vector2f position)
 	{
 		try
 		{

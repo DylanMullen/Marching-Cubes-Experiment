@@ -1,19 +1,19 @@
 package me.dylanmullen.marchingcubes.square;
 
-import me.dylanmullen.marchingcubes.math.Vector2F;
+import org.joml.Vector2f;
 
 public class Node
 {
 
-	private Vector2F position;
+	private Vector2f position;
 
-	public Node(Vector2F position)
+	public Node(Vector2f position)
 	{
 		this.position = position;
 	}
 
-	public Vector2F getPosition()
+	public Vector2f getPosition()
 	{
-		return position;
+		return new Vector2f(position.x, position.y);
 	}
 }

@@ -3,8 +3,9 @@ package me.dylanmullen.marchingcubes.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector2f;
+
 import me.dylanmullen.marchingcubes.graphics.VAO;
-import me.dylanmullen.marchingcubes.math.Vector2F;
 import me.dylanmullen.marchingcubes.square.MarchingSquare;
 import me.dylanmullen.marchingcubes.util.BufferUtil;
 
@@ -46,9 +47,9 @@ public class MarchingCubeGenerator
 		for (int i = 0; i < squares.size(); i++)
 		{
 			MarchingSquare square = squares.get(i);
-			Vector2F position = square.getPosition();
-			points[index] = position.getX();
-			points[index + 1] = position.getY();
+			Vector2f position = square.getPosition();
+			points[index] = position.x;
+			points[index + 1] = position.y;
 			points[index + 2] = 0;
 			index += 3;
 		}
@@ -56,11 +57,6 @@ public class MarchingCubeGenerator
 		vao.storeData(0, BufferUtil.toFloatBuffer(points));
 		vao.unbind();
 
-		for (int i = 0; i < points.length; i += 3)
-		{
-			System.out.println(points[i] + ", " + points[i + 1] + ", " + points[i + 2]);
-		}
-		System.out.println(points.length);
 		return vao;
 	}
 
@@ -69,8 +65,10 @@ public class MarchingCubeGenerator
 		for (int y = 0; y < height / 20; y++)
 			for (int x = 0; x < width / 20; x++)
 			{
-				MarchingSquare square = new MarchingSquare(new Vector2F(x * 20f, y * 20f));
+				MarchingSquare square = new MarchingSquare(new Vector2f(x * 20f, y * 20f));
 				square.setValues(getValue(x, y), getValue(x + 1, y), getValue(x + 1, y + 1), getValue(x, y + 1));
+				square.setConfiguration();
+				System.out.println(square.getConfiguration());
 				squares.add(square);
 			}
 	}

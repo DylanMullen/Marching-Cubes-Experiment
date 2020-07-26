@@ -3,6 +3,7 @@ package me.dylanmullen.marchingcubes.util;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class BufferUtil
 {
@@ -13,5 +14,12 @@ public class BufferUtil
 		buffer.put(data).flip();
 		return buffer;
 	}
-	
+
+	public static IntBuffer toIntBuffer(int[] array)
+	{
+		IntBuffer result = ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asIntBuffer();
+		result.put(array).flip();
+		return result;
+	}
+
 }

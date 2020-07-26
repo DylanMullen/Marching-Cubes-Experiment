@@ -5,10 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.system.MemoryStack;
 
-import me.dylanmullen.marchingcubes.math.Matrix4F;
+import me.dylanmullen.marchingcubes.util.BufferUtil;
 
 public class Shader
 {
@@ -86,19 +89,41 @@ public class Shader
 		GL20.glUseProgram(0);
 	}
 
+	public void bindAttrib(int location, String variable)
+	{
+		GL20.glBindAttribLocation(shaderID, location, variable);
+	}
+
 	public int getUniformVariable(String name)
 	{
 		return GL20.glGetUniformLocation(shaderID, name);
 	}
 
-	public void setProjectionMatrix(Matrix4F proj)
+	public void setProjectionMatrix(Matrix4f proj)
 	{
-		GL20.glUniformMatrix4fv(getUniformVariable("proj_matrix"), false, proj.toBuffer());
+		try (MemoryStack stack = MemoryStack.stackPush())
+		{
+			FloatBuffer fb = proj.get(stack.mallocFloat(16));
+			GL20.glUniformMatrix4fv(getUniformVariable("projectionMatrix"), false, fb);
+		}
 	}
-	
-	public void setTransformationMatrix(Matrix4F trans)
+
+	public void setTransformationMatrix(Matrix4f trans)
 	{
-		GL20.glUniformMatrix4fv(getUniformVariable("transformMat"), false, trans.toBuffer());
+		try (MemoryStack stack = MemoryStack.stackPush())
+		{
+			FloatBuffer fb = trans.get(stack.mallocFloat(16));
+			GL20.glUniformMatrix4fv(getUniformVariable("modelMat"), false, fb);
+		}
+	}
+
+	public void setViewMatrix(Matrix4f trans)
+	{
+		try (MemoryStack stack = MemoryStack.stackPush())
+		{
+			FloatBuffer fb = trans.get(stack.mallocFloat(16));
+			GL20.glUniformMatrix4fv(getUniformVariable("viewMat"), false, fb);
+		}
 	}
 
 }

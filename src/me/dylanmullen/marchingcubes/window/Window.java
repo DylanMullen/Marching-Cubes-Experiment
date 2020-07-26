@@ -18,6 +18,8 @@ public class Window
 
 	private String title;
 	private Dimension dimensions;
+	
+	private KeyboardHandler handler;
 
 	public Window(String title, Dimension dim)
 	{
@@ -49,6 +51,9 @@ public class Window
 			glfwSetWindowPos(this.windowReference, (vidmode.width() - pWidth.get(0)) / 2,
 					(vidmode.height() - pHeight.get(0)) / 2);
 		}
+		
+		this.handler=new KeyboardHandler();
+		glfwSetKeyCallback(this.windowReference, this.handler);
 	}
 
 	public void createWindow()
@@ -73,4 +78,10 @@ public class Window
 	{
 		return windowReference;
 	}
+	
+	public KeyboardHandler getKeyboardHandler()
+	{
+		return handler;
+	}
+	
 }

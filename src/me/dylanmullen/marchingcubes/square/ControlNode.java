@@ -1,6 +1,6 @@
 package me.dylanmullen.marchingcubes.square;
 
-import me.dylanmullen.marchingcubes.math.Vector2F;
+import org.joml.Vector2f;
 
 public class ControlNode extends Node
 {
@@ -10,7 +10,7 @@ public class ControlNode extends Node
 	private Node[] nodes;
 	private boolean active;
 
-	public ControlNode(Vector2F position)
+	public ControlNode(Vector2f position)
 	{
 		super(position);
 		this.nodes = new Node[2];
@@ -20,8 +20,8 @@ public class ControlNode extends Node
 
 	private void setNodes()
 	{
-		nodes[0] = NodeManager.getInstance().createNode(getPosition().clone().add(0, DISTANCE / 2));
-		nodes[1] = NodeManager.getInstance().createNode(getPosition().clone().add(DISTANCE / 2, 0));
+		nodes[0] = NodeManager.getInstance().createNode(getPosition().add(0, DISTANCE / 2));
+		nodes[1] = NodeManager.getInstance().createNode(getPosition().add(DISTANCE / 2, 0));
 	}
 
 	public boolean isActive()
