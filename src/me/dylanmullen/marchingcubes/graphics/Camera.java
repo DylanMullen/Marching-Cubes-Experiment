@@ -16,7 +16,7 @@ public class Camera
 
 	public Camera(KeyboardHandler keyboard)
 	{
-		this.position = new Vector3f(0, 10, 16);
+		this.position = new Vector3f(0, 10, 0);
 		this.pitchYaw = new Vector2f(0, 90);
 		this.keyboard = keyboard;
 	}
@@ -29,7 +29,6 @@ public class Camera
 	public void rotate()
 	{
 		this.pitchYaw.add(0, 0.01f);
-		System.out.println(pitchYaw.y);
 	}
 
 	public void update()

@@ -160,7 +160,10 @@ public class MarchingCubes implements Runnable
 
 	private void drawVAO(int length)
 	{
-		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		if(window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_G))
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		else
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
 		GL30.glBindVertexArray(object.getVAO().getVaoID());
 		GL20.glEnableVertexAttribArray(0);

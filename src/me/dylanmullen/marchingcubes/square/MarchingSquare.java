@@ -19,19 +19,57 @@ public class MarchingSquare
 	private void createControlNodes()
 	{
 		// TOP-LEFT
-		controls[0] = NodeManager.getInstance().createControlNode(getPosition());
+		controls[0] = NodeManager.getInstance().createControlNode(getPosition(), false);
 		// TOP-RIGHT
-		controls[1] = NodeManager.getInstance().createControlNode(getPosition().add(1, 0, 0));
+		controls[1] = NodeManager.getInstance().createControlNode(getPosition().add(1, 0, 0), true);
 		// BOTTOM-RIGHT
-		controls[2] = NodeManager.getInstance().createControlNode(getPosition().add(1, 0, 1));
+		controls[2] = NodeManager.getInstance().createControlNode(getPosition().add(1, 0, 1), true);
 		// BOTTOM-LEFT
-		controls[3] = NodeManager.getInstance().createControlNode(getPosition().add(0, 0, 1));
-		
-		for(ControlNode node : controls)
-		{
-			System.out.println(node.getPosition().x + ":"+node.getPosition().y);
-		}
-		System.out.println();
+		controls[3] = NodeManager.getInstance().createControlNode(getPosition().add(0, 0, 1), false);
+
+		System.out.println(getTopMiddle().toString());
+		System.out.println(getTopRight().toString());
+		System.out.println(getBottomRight().toString());
+	}
+
+	public Node getTopLeft()
+	{
+		return controls[0];
+	}
+
+	public Node getTopMiddle()
+	{
+		return controls[0].getRight();
+	}
+
+	public Node getTopRight()
+	{
+		return controls[1];
+	}
+
+	public Node getRightMiddle()
+	{
+		return controls[2].getAbove();
+	}
+
+	public Node getBottomRight()
+	{
+		return controls[2];
+	}
+
+	public Node getBottomMiddle()
+	{
+		return controls[3].getRight();
+	}
+
+	public Node getBottomLeft()
+	{
+		return controls[3];
+	}
+
+	public Node getLeftMiddle()
+	{
+		return controls[3].getAbove();
 	}
 
 	public void setValues(float tL, float tR, float bR, float bL)
@@ -66,7 +104,6 @@ public class MarchingSquare
 	public void setActive(int position)
 	{
 		controls[position].setActive();
-		controls[position].setPosition(controls[position].getPosition().add(0,1,0));
 	}
 
 	public boolean isActive(int position)

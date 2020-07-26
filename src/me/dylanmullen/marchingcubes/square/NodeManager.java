@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class NodeManager
@@ -54,11 +53,11 @@ public class NodeManager
 		}
 	}
 
-	public ControlNode createControlNode(Vector3f position)
+	public ControlNode createControlNode(Vector3f position, boolean right)
 	{
 		if (isControlNode(position))
 			return getControlNode(position);
-		ControlNode node = new ControlNode(position);
+		ControlNode node = new ControlNode(position, right);
 		cachedControlNodes.add(node);
 		return node;
 	}

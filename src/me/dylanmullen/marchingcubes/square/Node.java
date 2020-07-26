@@ -18,10 +18,10 @@ public class Node
 	{
 		return new Vector3f(position.x, position.y, position.z);
 	}
-	
+
 	public void setPosition(Vector3f pos)
 	{
-		this.position=pos;
+		this.position = pos;
 	}
 
 	public int getVertexID()
@@ -32,5 +32,11 @@ public class Node
 	public void setVertexID(int vertexID)
 	{
 		this.vertexID = vertexID;
+	}
+
+	@Override
+	public String toString()
+	{
+		return position.x + "," + position.y + "," + position.z;
 	}
 }
