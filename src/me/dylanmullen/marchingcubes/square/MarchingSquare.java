@@ -1,16 +1,15 @@
 package me.dylanmullen.marchingcubes.square;
 
-import org.joml.Vector2f;
-
+import org.joml.Vector3f;
 
 public class MarchingSquare
 {
 
-	private Vector2f position;
+	private Vector3f position;
 	private ControlNode[] controls;
 	private int configuration;
 
-	public MarchingSquare(Vector2f position)
+	public MarchingSquare(Vector3f position)
 	{
 		this.position = position;
 		this.controls = new ControlNode[4];
@@ -19,11 +18,20 @@ public class MarchingSquare
 
 	private void createControlNodes()
 	{
-		controls[0] = NodeManager.getInstance().createControlNode(position);
-		controls[1] = NodeManager.getInstance().createControlNode(new Vector2f(position.x, position.y).add(ControlNode.DISTANCE, 0));
-		controls[2] = NodeManager.getInstance()
-				.createControlNode(new Vector2f(position.x, position.y).add(ControlNode.DISTANCE, ControlNode.DISTANCE));
-		controls[3] = NodeManager.getInstance().createControlNode(new Vector2f(position.x, position.y).add(0, ControlNode.DISTANCE));
+		// TOP-LEFT
+		controls[0] = NodeManager.getInstance().createControlNode(getPosition());
+		// TOP-RIGHT
+		controls[1] = NodeManager.getInstance().createControlNode(getPosition().add(1, 0, 0));
+		// BOTTOM-RIGHT
+		controls[2] = NodeManager.getInstance().createControlNode(getPosition().add(1, 0, 1));
+		// BOTTOM-LEFT
+		controls[3] = NodeManager.getInstance().createControlNode(getPosition().add(0, 0, 1));
+		
+		for(ControlNode node : controls)
+		{
+			System.out.println(node.getPosition().x + ":"+node.getPosition().y);
+		}
+		System.out.println();
 	}
 
 	public void setValues(float tL, float tR, float bR, float bL)
@@ -37,19 +45,19 @@ public class MarchingSquare
 		if (bL > 0)
 			setActive(3);
 	}
-	
+
 	public void setConfiguration()
 	{
-		if(isActive(0))
-			configuration+=8;
-		if(isActive(1))
-			configuration+=4;	
-		if(isActive(2))
-			configuration+=2;	
-		if(isActive(3))
-			configuration+=1;	
+		if (isActive(0))
+			configuration += 8;
+		if (isActive(1))
+			configuration += 4;
+		if (isActive(2))
+			configuration += 2;
+		if (isActive(3))
+			configuration += 1;
 	}
-	
+
 	public int getConfiguration()
 	{
 		return configuration;
@@ -58,6 +66,7 @@ public class MarchingSquare
 	public void setActive(int position)
 	{
 		controls[position].setActive();
+		controls[position].setPosition(controls[position].getPosition().add(0,1,0));
 	}
 
 	public boolean isActive(int position)
@@ -72,9 +81,13 @@ public class MarchingSquare
 				+ controls[2].isActive() + ",3:" + controls[3].isActive() + "}";
 	}
 
-	public Vector2f getPosition()
+	public Vector3f getPosition()
 	{
-		return position;
+		return new Vector3f(position);
 	}
 
+	public ControlNode[] getControlNodes()
+	{
+		return controls;
+	}
 }

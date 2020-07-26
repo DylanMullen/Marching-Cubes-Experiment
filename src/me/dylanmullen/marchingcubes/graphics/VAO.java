@@ -19,6 +19,7 @@ public class VAO
 {
 
 	private int vaoID;
+	private int count;
 
 	private List<Integer> vbos;
 
@@ -49,17 +50,23 @@ public class VAO
 		vbos.add(vboID);
 	}
 
-	public void soreIndicesBuffer(int[] indices)
+	public void storeIndicesBuffer(int[] indices)
 	{
 		int vboID = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
 		IntBuffer buffer = BufferUtil.toIntBuffer(indices);
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+		this.count = indices.length;
 		vbos.add(vboID);
 	}
 
 	public int getVaoID()
 	{
 		return vaoID;
+	}
+	
+	public int getCount()
+	{
+		return count;
 	}
 }

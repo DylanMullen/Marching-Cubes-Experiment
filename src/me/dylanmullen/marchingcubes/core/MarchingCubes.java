@@ -21,6 +21,9 @@ import me.dylanmullen.marchingcubes.window.Window;
 public class MarchingCubes implements Runnable
 {
 
+	private final float WIDTH = 1280f;
+	private final float HEIGHT = 720f;
+
 	private Window window;
 
 	private Thread thread;
@@ -45,19 +48,6 @@ public class MarchingCubes implements Runnable
 
 	private GameObject object;
 	private Shader shader;
-	float[] vertices =
-	{
-			-0.5f, 0.5f, 0f, // v0
-			-0.5f, -0.5f, 0f, // v1
-			0.5f, -0.5f, 0f, // v2
-			0.5f, 0.5f, 0f,// v3
-	};
-
-	int[] indices =
-	{
-			0, 1, 3, // top left triangle (v0, v1, v3)
-			3, 1, 2// bottom right triangle (v3, v1, v2)
-	};
 
 	public void run()
 	{
@@ -67,14 +57,10 @@ public class MarchingCubes implements Runnable
 		this.shader = new Shader("test.vert", "test.frag");
 		this.shader.bindAttrib(0, "position");
 
-		MarchingCubeGenerator gen = new MarchingCubeGenerator(40, 40);
+		MarchingCubeGenerator gen = new MarchingCubeGenerator(16, 16);
 		gen.generate();
 
-		VAO vao = new VAO();
-		vao.bind();
-		vao.storeData(0, BufferUtil.toFloatBuffer(vertices));
-		vao.soreIndicesBuffer(indices);
-		vao.unbind();
+		VAO vao = gen.generateMesh();
 
 		this.object = new GameObject(vao, new Vector3f(0, 0, -1), new Vector3f(0, 0, 0));
 		GL11.glClearColor(0f, 0f, 0f, 1f);
@@ -123,7 +109,7 @@ public class MarchingCubes implements Runnable
 		shader.start();
 		shader.setTransformationMatrix(trans);
 		shader.setViewMatrix(camera.getViewMatrix());
-		drawVAO(indices.length);
+		drawVAO(object.getVAO().getCount());
 		shader.stop();
 	}
 
@@ -144,7 +130,7 @@ public class MarchingCubes implements Runnable
 		Matrix4f matrix = new Matrix4f();
 
 		float FOV = 60f;
-		float aspect = (float) 500 / (float) 500;
+		float aspect = (float) WIDTH / (float) HEIGHT;
 		float near = 0.1f;
 		float far = 100f;
 
@@ -174,9 +160,11 @@ public class MarchingCubes implements Runnable
 
 	private void drawVAO(int length)
 	{
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+
 		GL30.glBindVertexArray(object.getVAO().getVaoID());
 		GL20.glEnableVertexAttribArray(0);
-		GL11.glDrawElements(GL11.GL_TRIANGLES, indices.length, GL11.GL_UNSIGNED_INT, 0);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, length, GL11.GL_UNSIGNED_INT, 0);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 	}
@@ -202,7 +190,7 @@ public class MarchingCubes implements Runnable
 
 	private void init()
 	{
-		this.window = new Window("Marching Cubes", new Dimension(500, 500));
+		this.window = new Window("Marching Cubes", new Dimension((int) WIDTH, (int) HEIGHT));
 		window.createWindow();
 
 		this.camera = new Camera(window.getKeyboardHandler());
