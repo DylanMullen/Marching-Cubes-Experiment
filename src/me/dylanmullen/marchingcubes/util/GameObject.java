@@ -18,6 +18,11 @@ public class GameObject
 		this.rotation = rotation;
 	}
 
+	public void setVao(VAO vao)
+	{
+		this.vao = vao;
+	}
+	
 	public void move(Vector3f pos)
 	{
 		this.position.add(pos);

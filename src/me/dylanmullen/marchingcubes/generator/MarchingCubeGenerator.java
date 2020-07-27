@@ -31,12 +31,21 @@ public class MarchingCubeGenerator
 		this.squares = new ArrayList<MarchingSquare>();
 	}
 
+	public void reset()
+	{
+		squares.clear();
+		generator.setSeed();
+		generate();
+	}
+
 	public void generate()
 	{
 		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++)
 			{
-				points[x + y * width] = generator.generateSmoothNoise(x, y);
+				float re = generator.generateNoise(x, y);
+				System.out.println(re);
+				points[x + y * width] = re;
 			}
 		setupSquares();
 	}
@@ -165,11 +174,9 @@ public class MarchingCubeGenerator
 		{
 			if (nodes.get(i).getVertexID() != -1)
 				continue;
-			System.out.print(nodes.get(i).getPosition().x + ", " + nodes.get(i).getPosition().z + " : ");
 			nodes.get(i).setVertexID(vertices.size());
 			vertices.add(nodes.get(i).getPosition());
 		}
-		System.out.println();
 	}
 
 	public void addIndices(ArrayList<Integer> indices, Node... nodes)

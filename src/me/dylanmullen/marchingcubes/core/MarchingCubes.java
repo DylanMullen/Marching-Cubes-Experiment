@@ -48,6 +48,8 @@ public class MarchingCubes implements Runnable
 	private GameObject object;
 	private Shader shader;
 
+	MarchingCubeGenerator gen;
+
 	public void run()
 	{
 		init();
@@ -56,7 +58,7 @@ public class MarchingCubes implements Runnable
 		this.shader = new Shader("test.vert", "test.frag");
 		this.shader.bindAttrib(0, "position");
 
-		MarchingCubeGenerator gen = new MarchingCubeGenerator(16, 16);
+		gen = new MarchingCubeGenerator(16, 16);
 		gen.generate();
 
 		VAO vao = gen.generateMesh();
@@ -100,6 +102,12 @@ public class MarchingCubes implements Runnable
 	private void update()
 	{
 		camera.update();
+
+		if (window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_ENTER))
+		{
+			gen.reset();
+			object.setVao(gen.generateMesh());
+		}
 	}
 
 	private void render()
