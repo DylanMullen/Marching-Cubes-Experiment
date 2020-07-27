@@ -72,13 +72,13 @@ public class MarchingSquare
 
 	public void setValues(float tL, float tR, float bR, float bL)
 	{
-		if (tL > 0)
+		if (tL >= 0)
 			setActive(0);
-		if (tR > 0)
+		if (tR >= 0)
 			setActive(1);
-		if (bR > 0)
+		if (bR >= 0)
 			setActive(2);
-		if (bL > 0)
+		if (bL >= 0)
 			setActive(3);
 	}
 

@@ -26,28 +26,6 @@ public class MarchingCubeGenerator
 		generator.setSeed();
 	}
 
-	public ArrayList<MarchingSquare> generateSquares(Vector3f position, int width, int height)
-	{
-		float[] points = new float[width * height];
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++)
-			{
-				points[x + y * width] = generator.generateNoise(x, y);
-			}
-		return createSquares(position, points, width, height);
-	}
-
-	private float getValue(float[] points, int width, int x, int z)
-	{
-		try
-		{
-			return points[x + z * width];
-		} catch (ArrayIndexOutOfBoundsException e)
-		{
-			return -1;
-		}
-	}
-
 	public VAO generateMesh(ArrayList<MarchingSquare> squares)
 	{
 		VAO vao = new VAO();
@@ -206,16 +184,19 @@ public class MarchingCubeGenerator
 		return arr;
 	}
 
-	private ArrayList<MarchingSquare> createSquares(Vector3f position, float[] points, int width, int height)
+	public ArrayList<MarchingSquare> createSquares(Vector3f position, int width, int height)
 	{
 		ArrayList<MarchingSquare> squares = new ArrayList<MarchingSquare>();
 
 		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++)
 			{
-				MarchingSquare square = new MarchingSquare(new Vector3f(x + position.x, 0, y + position.z));
-				square.setValues(getValue(points, width, x, y), getValue(points, width, x + 1, y),
-						getValue(points, width, x + 1, y + 1), getValue(points, width, x, y + 1));
+				MarchingSquare square = new MarchingSquare(new Vector3f(x, 0, y));
+				int xPos = x + (int) (position.x);
+				int zPos = (int) (y + position.z);
+
+				square.setValues(getValue(xPos, zPos), getValue(xPos + 1, zPos), getValue(xPos + 1, zPos + 1),
+						getValue(xPos, zPos + 1));
 
 				square.setConfiguration();
 				squares.add(square);
@@ -223,4 +204,10 @@ public class MarchingCubeGenerator
 
 		return squares;
 	}
+
+	public float getValue(int x, int z)
+	{
+		return generator.generateNoise(x, z);
+	}
+
 }
