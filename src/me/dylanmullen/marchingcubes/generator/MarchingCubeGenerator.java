@@ -14,50 +14,48 @@ import me.dylanmullen.marchingcubes.util.BufferUtil;
 public class MarchingCubeGenerator
 {
 
-	private int width;
-	private int height;
-	private float[] points;
-
 	private NoiseGenerator generator;
 
-	private ArrayList<MarchingSquare> squares;
-
-	public MarchingCubeGenerator(int width, int height)
+	public MarchingCubeGenerator()
 	{
-		this.width = width;
-		this.height = height;
-		this.points = new float[width * height];
 		this.generator = new NoiseGenerator();
-		this.squares = new ArrayList<MarchingSquare>();
 	}
 
 	public void reset()
 	{
-		squares.clear();
 		generator.setSeed();
-		generate();
 	}
 
-	public void generate()
+	public ArrayList<MarchingSquare> generateSquares(Vector3f position, int width, int height)
 	{
+		float[] points = new float[width * height];
 		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++)
 			{
-				float re = generator.generateNoise(x, y);
-				System.out.println(re);
-				points[x + y * width] = re;
+				points[x + y * width] = generator.generateNoise(x, y);
 			}
-		setupSquares();
+		return createSquares(position, points, width, height);
 	}
 
-	public VAO generateMesh()
+	private float getValue(float[] points, int width, int x, int z)
+	{
+		try
+		{
+			return points[x + z * width];
+		} catch (ArrayIndexOutOfBoundsException e)
+		{
+			return -1;
+		}
+	}
+
+	public VAO generateMesh(ArrayList<MarchingSquare> squares)
 	{
 		VAO vao = new VAO();
 
 		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 
-		for (MarchingSquare square : this.squares)
+		for (MarchingSquare square : squares)
 		{
 			ArrayList<Node> nodes = (ArrayList<Node>) getNodes(square);
 			createTriangles(vertices, indices, nodes);
@@ -181,8 +179,6 @@ public class MarchingCubeGenerator
 
 	public void addIndices(ArrayList<Integer> indices, Node... nodes)
 	{
-//		System.out.println(nodes[0].getVertexID() + "," + nodes[1].getVertexID() + "," + nodes[2].getVertexID());
-
 		indices.add(nodes[0].getVertexID());
 		indices.add(nodes[1].getVertexID());
 		indices.add(nodes[2].getVertexID());
@@ -210,29 +206,21 @@ public class MarchingCubeGenerator
 		return arr;
 	}
 
-	public void setupSquares()
+	private ArrayList<MarchingSquare> createSquares(Vector3f position, float[] points, int width, int height)
 	{
+		ArrayList<MarchingSquare> squares = new ArrayList<MarchingSquare>();
+
 		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++)
 			{
-				MarchingSquare square = new MarchingSquare(new Vector3f(x, 0, y));
-				square.setValues(getValue(x, y), getValue(x + 1, y), getValue(x + 1, y + 1), getValue(x, y + 1));
+				MarchingSquare square = new MarchingSquare(new Vector3f(x + position.x, 0, y + position.z));
+				square.setValues(getValue(points, width, x, y), getValue(points, width, x + 1, y),
+						getValue(points, width, x + 1, y + 1), getValue(points, width, x, y + 1));
 
 				square.setConfiguration();
-
 				squares.add(square);
 			}
-	}
 
-	public float getValue(int x, int y)
-	{
-		try
-		{
-			return points[x + y * width];
-		} catch (ArrayIndexOutOfBoundsException e)
-		{
-			return -1;
-		}
+		return squares;
 	}
-
 }

@@ -2,18 +2,16 @@ package me.dylanmullen.marchingcubes.core;
 
 import java.awt.Dimension;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import me.dylanmullen.marchingcubes.generator.MarchingCubeGenerator;
 import me.dylanmullen.marchingcubes.graphics.Camera;
+import me.dylanmullen.marchingcubes.graphics.Renderer;
 import me.dylanmullen.marchingcubes.graphics.Shader;
-import me.dylanmullen.marchingcubes.graphics.VAO;
+import me.dylanmullen.marchingcubes.terrain.Terrain;
 import me.dylanmullen.marchingcubes.util.GameObject;
 import me.dylanmullen.marchingcubes.window.Window;
 
@@ -58,18 +56,9 @@ public class MarchingCubes implements Runnable
 		this.shader = new Shader("test.vert", "test.frag");
 		this.shader.bindAttrib(0, "position");
 
-		gen = new MarchingCubeGenerator(16, 16);
-		gen.generate();
-
-		VAO vao = gen.generateMesh();
-
-		this.object = new GameObject(vao, new Vector3f(0, 0, -1), new Vector3f(0, 0, 0));
-		GL11.glClearColor(0f, 0f, 0f, 1f);
-
-		Matrix4f projMat = getProjectionMatrix();
-		shader.start();
-		shader.setProjectionMatrix(projMat);
-		shader.stop();
+		Renderer render = new Renderer(camera);
+		Terrain terrain = new Terrain();
+		terrain.debug();
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 30.0;
@@ -90,7 +79,12 @@ public class MarchingCubes implements Runnable
 
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-			render();
+			if (window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_X))
+				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+			else
+				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+			
+			render.renderTerrain(terrain);
 
 			GLFW.glfwSwapBuffers(this.window.getWindowReference());
 			GLFW.glfwPollEvents();
@@ -102,82 +96,6 @@ public class MarchingCubes implements Runnable
 	private void update()
 	{
 		camera.update();
-
-		if (window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_ENTER))
-		{
-			gen.reset();
-			object.setVao(gen.generateMesh());
-		}
-	}
-
-	private void render()
-	{
-		Matrix4f trans = translation(object.getPosition(), object.getRotation(), new Vector3f(1, 1, 1));
-		shader.start();
-		shader.setTransformationMatrix(trans);
-		shader.setViewMatrix(camera.getViewMatrix());
-		drawVAO(object.getVAO().getCount());
-		shader.stop();
-
-	}
-
-	private Matrix4f translation(Vector3f position, Vector3f rotation, Vector3f scale)
-	{
-		Matrix4f result = new Matrix4f();
-		result.identity();
-		result.translate(position);
-		result.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0));
-		result.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
-		result.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
-		result.scale(scale);
-		return result;
-	}
-
-	private Matrix4f getProjectionMatrix()
-	{
-		Matrix4f matrix = new Matrix4f();
-
-		float FOV = 60f;
-		float aspect = (float) WIDTH / (float) HEIGHT;
-		float near = 0.1f;
-		float far = 100f;
-
-		float yScale = coTangent(toRadians(FOV / 2f));
-		float xScale = yScale / aspect;
-		float fustrum = far - near;
-
-		matrix.m00(xScale);
-		matrix.m11(yScale);
-		matrix.m22(-((far + near) / fustrum));
-		matrix.m23(-1);
-		matrix.m32(-((2 * near * far) / fustrum));
-		matrix.m33(0);
-
-		return matrix;
-	}
-
-	private float coTangent(float x)
-	{
-		return (float) (1 / Math.tan(x));
-	}
-
-	private float toRadians(float x)
-	{
-		return (float) Math.toRadians(x);
-	}
-
-	private void drawVAO(int length)
-	{
-		if (window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_G))
-			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		else
-			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-
-		GL30.glBindVertexArray(object.getVAO().getVaoID());
-		GL20.glEnableVertexAttribArray(0);
-		GL11.glDrawElements(GL11.GL_TRIANGLES, length, GL11.GL_UNSIGNED_INT, 0);
-		GL20.glDisableVertexAttribArray(0);
-		GL30.glBindVertexArray(0);
 	}
 
 	private void stop()
@@ -192,12 +110,6 @@ public class MarchingCubes implements Runnable
 			e.printStackTrace();
 		}
 	}
-
-	float[] pos = new float[]
-	{
-			-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f
-
-	};
 
 	private void init()
 	{
