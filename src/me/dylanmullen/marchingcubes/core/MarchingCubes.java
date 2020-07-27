@@ -14,7 +14,6 @@ import me.dylanmullen.marchingcubes.generator.MarchingCubeGenerator;
 import me.dylanmullen.marchingcubes.graphics.Camera;
 import me.dylanmullen.marchingcubes.graphics.Shader;
 import me.dylanmullen.marchingcubes.graphics.VAO;
-import me.dylanmullen.marchingcubes.util.BufferUtil;
 import me.dylanmullen.marchingcubes.util.GameObject;
 import me.dylanmullen.marchingcubes.window.Window;
 
@@ -111,6 +110,7 @@ public class MarchingCubes implements Runnable
 		shader.setViewMatrix(camera.getViewMatrix());
 		drawVAO(object.getVAO().getCount());
 		shader.stop();
+
 	}
 
 	private Matrix4f translation(Vector3f position, Vector3f rotation, Vector3f scale)
@@ -160,7 +160,7 @@ public class MarchingCubes implements Runnable
 
 	private void drawVAO(int length)
 	{
-		if(window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_G))
+		if (window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_G))
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		else
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);

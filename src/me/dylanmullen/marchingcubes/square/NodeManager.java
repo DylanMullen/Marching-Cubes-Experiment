@@ -30,10 +30,10 @@ public class NodeManager
 
 	public Node createNode(Vector3f position)
 	{
-		if (isNode(position))
-			return getNode(position);
+//		if (isNode(position))
+//			return getNode(position);
 		Node node = new Node(position);
-		cachedNodes.add(node);
+//		cachedNodes.add(node);
 		return node;
 	}
 
@@ -55,10 +55,10 @@ public class NodeManager
 
 	public ControlNode createControlNode(Vector3f position, boolean right)
 	{
-		if (isControlNode(position))
-			return getControlNode(position);
+//		if (isControlNode(position))
+//			return getControlNode(position);
 		ControlNode node = new ControlNode(position, right);
-		cachedControlNodes.add(node);
+//		cachedControlNodes.add(node);
 		return node;
 	}
 

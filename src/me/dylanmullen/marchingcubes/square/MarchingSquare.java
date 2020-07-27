@@ -11,6 +11,7 @@ public class MarchingSquare
 
 	public MarchingSquare(Vector3f position)
 	{
+//		System.out.println(position.x + "," + position.z);
 		this.position = position;
 		this.controls = new ControlNode[4];
 		createControlNodes();
@@ -27,9 +28,6 @@ public class MarchingSquare
 		// BOTTOM-LEFT
 		controls[3] = NodeManager.getInstance().createControlNode(getPosition().add(0, 0, 1), false);
 
-		System.out.println(getTopMiddle().toString());
-		System.out.println(getTopRight().toString());
-		System.out.println(getBottomRight().toString());
 	}
 
 	public Node getTopLeft()
@@ -94,6 +92,11 @@ public class MarchingSquare
 			configuration += 2;
 		if (isActive(3))
 			configuration += 1;
+	}
+
+	public void setConfiguration(int config)
+	{
+		this.configuration = config;
 	}
 
 	public int getConfiguration()

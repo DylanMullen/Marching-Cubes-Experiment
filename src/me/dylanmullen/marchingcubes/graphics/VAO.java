@@ -46,7 +46,6 @@ public class VAO
 		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(attrib, 3, GL11.GL_FLOAT, false, 0, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 		vbos.add(vboID);
 	}
 

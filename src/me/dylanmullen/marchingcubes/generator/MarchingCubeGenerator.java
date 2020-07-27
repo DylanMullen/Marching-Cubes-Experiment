@@ -20,7 +20,7 @@ public class MarchingCubeGenerator
 
 	private NoiseGenerator generator;
 
-	private List<MarchingSquare> squares;
+	private ArrayList<MarchingSquare> squares;
 
 	public MarchingCubeGenerator(int width, int height)
 	{
@@ -66,11 +66,11 @@ public class MarchingCubeGenerator
 	{
 		List<Node> nodeList = new ArrayList<>();
 
+		/* Credit to Sebastian Lague for doing this work for me. */
 		switch (square.getConfiguration())
 		{
 			case 0:
 				break;
-
 			// 1 points:
 			case 1:
 				addNodes(nodeList, square.getBottomMiddle(), square.getBottomLeft(), square.getLeftMiddle());
@@ -165,13 +165,17 @@ public class MarchingCubeGenerator
 		{
 			if (nodes.get(i).getVertexID() != -1)
 				continue;
+			System.out.print(nodes.get(i).getPosition().x + ", " + nodes.get(i).getPosition().z + " : ");
 			nodes.get(i).setVertexID(vertices.size());
 			vertices.add(nodes.get(i).getPosition());
 		}
+		System.out.println();
 	}
 
 	public void addIndices(ArrayList<Integer> indices, Node... nodes)
 	{
+//		System.out.println(nodes[0].getVertexID() + "," + nodes[1].getVertexID() + "," + nodes[2].getVertexID());
+
 		indices.add(nodes[0].getVertexID());
 		indices.add(nodes[1].getVertexID());
 		indices.add(nodes[2].getVertexID());
@@ -206,7 +210,9 @@ public class MarchingCubeGenerator
 			{
 				MarchingSquare square = new MarchingSquare(new Vector3f(x, 0, y));
 				square.setValues(getValue(x, y), getValue(x + 1, y), getValue(x + 1, y + 1), getValue(x, y + 1));
+
 				square.setConfiguration();
+
 				squares.add(square);
 			}
 	}
