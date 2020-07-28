@@ -8,13 +8,10 @@ public class NoiseGenerator
 	private Random random;
 	private long seed;
 
-	private int octaves;
-
 	public NoiseGenerator()
 	{
 		this.random = new Random();
 		this.seed = random.nextInt(100000);
-		this.octaves = 4;
 	}
 
 	public void setSeed()

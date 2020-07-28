@@ -14,9 +14,11 @@ public class Camera
 	private Vector2f pitchYaw;
 	private KeyboardHandler keyboard;
 
+	private boolean moved;
+	
 	public Camera(KeyboardHandler keyboard)
 	{
-		this.position = new Vector3f(16, 50, 0);
+		this.position = new Vector3f(-8, 50, 32);
 		this.pitchYaw = new Vector2f(0, 90);
 		this.keyboard = keyboard;
 	}
@@ -24,32 +26,34 @@ public class Camera
 	public void move(Vector3f vec)
 	{
 		position.add(vec);
+		moved=true;
 	}
 	
 	public void rotate()
 	{
-		this.pitchYaw.add(0, 0.01f);
+		this.pitchYaw.add(0, 0.1f);
 	}
 
 	public void update()
 	{
+		moved=false;
 		handleInputs();
 	}
 
 	private void handleInputs()
 	{
 		if (keyboard.isPressed(GLFW.GLFW_KEY_SPACE))
-			move(new Vector3f(0f, 0.1f, 0f));
+			move(new Vector3f(0f, 0.5f, 0f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT))
-			move(new Vector3f(0f, -0.1f, 0f));
+			move(new Vector3f(0f, -0.5f, 0f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_D))
-			move(new Vector3f(0.1f, 0f, 0f));
+			move(new Vector3f(0.5f, 0f, 0f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_A))
-			move(new Vector3f(-0.1f, 0f, 0f));
+			move(new Vector3f(-0.5f, 0f, 0f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_S))
-			move(new Vector3f(0f, 0f, 0.1f));
+			move(new Vector3f(0f, 0f, 0.5f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_W))
-			move(new Vector3f(0f, 0f, -0.1f));
+			move(new Vector3f(0f, 0f, -0.5f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_LEFT_CONTROL))
 			rotate();
 	}
@@ -61,6 +65,16 @@ public class Camera
 		matrix.rotate((float) Math.toRadians(pitchYaw.y), new Vector3f(1, 0, 0));
 		matrix.translate(-position.x, -position.y, -position.z);
 		return matrix;
+	}
+	
+	public Vector3f getPosition()
+	{
+		return position;
+	}
+	
+	public boolean hasMoved()
+	{
+		return moved;
 	}
 
 }

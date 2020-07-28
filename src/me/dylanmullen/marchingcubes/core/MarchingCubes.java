@@ -2,7 +2,6 @@ package me.dylanmullen.marchingcubes.core;
 
 import java.awt.Dimension;
 
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -12,6 +11,7 @@ import me.dylanmullen.marchingcubes.graphics.Camera;
 import me.dylanmullen.marchingcubes.graphics.Renderer;
 import me.dylanmullen.marchingcubes.graphics.Shader;
 import me.dylanmullen.marchingcubes.terrain.Terrain;
+import me.dylanmullen.marchingcubes.terrain.TerrainController;
 import me.dylanmullen.marchingcubes.util.GameObject;
 import me.dylanmullen.marchingcubes.window.Window;
 
@@ -47,6 +47,7 @@ public class MarchingCubes implements Runnable
 	private Shader shader;
 
 	MarchingCubeGenerator gen;
+	TerrainController terrainController;
 
 	public void run()
 	{
@@ -57,8 +58,11 @@ public class MarchingCubes implements Runnable
 		this.shader.bindAttrib(0, "position");
 
 		Renderer render = new Renderer(camera);
-		Terrain terrain = new Terrain();
-		terrain.debug();
+		terrainController = new TerrainController(camera);
+		terrainController.getTerrain().debug();
+		
+		terrainController.loadSurroundingChunks();
+		
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 30.0;
@@ -84,7 +88,7 @@ public class MarchingCubes implements Runnable
 			else
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			
-			render.renderTerrain(terrain);
+			render.renderTerrain(terrainController.getTerrain());
 
 			GLFW.glfwSwapBuffers(this.window.getWindowReference());
 			GLFW.glfwPollEvents();
@@ -96,6 +100,8 @@ public class MarchingCubes implements Runnable
 	private void update()
 	{
 		camera.update();
+		if(camera.hasMoved())
+			terrainController.loadSurroundingChunks();
 	}
 
 	private void stop()
