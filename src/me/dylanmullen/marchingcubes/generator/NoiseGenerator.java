@@ -14,11 +14,6 @@ public class NoiseGenerator
 		this.seed = random.nextInt(100000);
 	}
 
-	public void setSeed()
-	{
-		this.seed = System.currentTimeMillis();
-	}
-
 	public float generateSmoothNoise(int x, int y)
 	{
 		float corners = (generateRoughNoise(x - 1, y - 1) + generateRoughNoise(x + 1, y - 1)

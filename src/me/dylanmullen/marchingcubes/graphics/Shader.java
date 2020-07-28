@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
@@ -97,6 +98,11 @@ public class Shader
 	public int getUniformVariable(String name)
 	{
 		return GL20.glGetUniformLocation(shaderID, name);
+	}
+
+	public void setVector3f(String uniform, Vector3f vec)
+	{
+		GL20.glUniform3f(getUniformVariable(uniform), vec.x, vec.y, vec.z);
 	}
 
 	public void setProjectionMatrix(Matrix4f proj)

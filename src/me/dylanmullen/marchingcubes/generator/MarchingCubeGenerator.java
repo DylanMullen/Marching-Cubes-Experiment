@@ -21,11 +21,6 @@ public class MarchingCubeGenerator
 		this.generator = new NoiseGenerator();
 	}
 
-	public void reset()
-	{
-		generator.setSeed();
-	}
-
 	public VAO generateMesh(ArrayList<MarchingSquare> squares)
 	{
 		VAO vao = new VAO();

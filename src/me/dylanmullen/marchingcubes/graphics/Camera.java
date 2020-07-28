@@ -18,7 +18,7 @@ public class Camera
 	
 	public Camera(KeyboardHandler keyboard)
 	{
-		this.position = new Vector3f(-8, 50, 32);
+		this.position = new Vector3f(-8, 50, -8);
 		this.pitchYaw = new Vector2f(0, 90);
 		this.keyboard = keyboard;
 	}

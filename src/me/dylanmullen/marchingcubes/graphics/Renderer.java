@@ -1,6 +1,7 @@
 package me.dylanmullen.marchingcubes.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -42,6 +43,10 @@ public class Renderer
 		for (Chunk chunk : terrain.getLoadedChunks())
 		{
 			shader.setTransformationMatrix(chunk.getModelMatrix());
+
+			float value = (float) Math.random();
+			shader.setVector3f("chunkColour", chunk.getColour());
+
 			drawVAO(chunk.getModel());
 		}
 		shader.stop();

@@ -43,7 +43,6 @@ public class MarchingCubes implements Runnable
 
 	}
 
-	private GameObject object;
 	private Shader shader;
 
 	MarchingCubeGenerator gen;

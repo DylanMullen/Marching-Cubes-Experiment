@@ -21,6 +21,17 @@ public class TerrainController
 		int xCord = (int) (camera.getPosition().x / 16f) * 16 - (camera.getPosition().x < 0 ? 16 : 0);
 		int zCode = (int) (camera.getPosition().z / 16f) * 16 - (camera.getPosition().z < 0 ? 16 : 0);
 		terrain.generateChunk(new Vector3f(xCord, 0, zCode));
+		// Sides
+		terrain.generateChunk(new Vector3f(xCord + 16, 0, zCode));
+		terrain.generateChunk(new Vector3f(xCord - 16, 0, zCode));
+		terrain.generateChunk(new Vector3f(xCord, 0, zCode + 16));
+		terrain.generateChunk(new Vector3f(xCord, 0, zCode - 16));
+
+		// Corners
+		terrain.generateChunk(new Vector3f(xCord + 16, 0, zCode + 16));
+		terrain.generateChunk(new Vector3f(xCord + 16, 0, zCode - 16));
+		terrain.generateChunk(new Vector3f(xCord - 16, 0, zCode + 16));
+		terrain.generateChunk(new Vector3f(xCord - 16, 0, zCode - 16));
 	}
 
 	public Camera getCamera()
