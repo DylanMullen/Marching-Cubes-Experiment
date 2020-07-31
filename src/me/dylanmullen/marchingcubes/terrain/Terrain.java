@@ -3,6 +3,7 @@ package me.dylanmullen.marchingcubes.terrain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.joml.Vector3f;
 
@@ -27,7 +28,7 @@ public class Terrain
 
 	public void loadSurroundedChunks(Vector3f chunkCoords)
 	{
-		generateChunk(chunkCoords);
+		generateChunk(new Vector3f(chunkCoords.x, 0, chunkCoords.z));
 		loadSides(chunkCoords);
 		loadCorners(chunkCoords);
 	}
@@ -39,7 +40,7 @@ public class Terrain
 		generateChunk(new Vector3f(chunkCoords.x, 0, chunkCoords.z + 16));
 		generateChunk(new Vector3f(chunkCoords.x, 0, chunkCoords.z - 16));
 	}
-	
+
 	private void loadCorners(Vector3f chunkCoords)
 	{
 		generateChunk(new Vector3f(chunkCoords.x + 16, 0, chunkCoords.z + 16));
@@ -53,7 +54,6 @@ public class Terrain
 		if (isLoaded(position))
 			return;
 
-		System.out.println("test");
 		ArrayList<MarchingSquare> squares = generator.createSquares(position, CHUNK_SIZE, CHUNK_SIZE);
 		VAO model = generator.generateMesh(squares);
 		Chunk chunk = new Chunk(position, model);
@@ -74,5 +74,28 @@ public class Terrain
 	public List<Chunk> getLoadedChunks()
 	{
 		return loadedChunks;
+	}
+
+	public List<Chunk> getChunksOutside(Vector3f vector)
+	{
+		Vector3f high = new Vector3f(vector.x - 16, 0, vector.z - 16);
+		Vector3f low = new Vector3f(vector.x + 16, 0, vector.z + 16);
+
+		return loadedChunks.stream().filter(e -> !intersects(high, low, e.getPosition())).map(e -> e)
+				.collect(Collectors.toList());
+	}
+
+	private boolean intersects(Vector3f high, Vector3f low, Vector3f position)
+	{
+		return (position.x >= high.x && position.x <= low.x) && (position.z >= high.z && position.z <= low.z);
+	}
+
+	public void unloadChunks(Vector3f chunkPosition)
+	{
+		List<Chunk> chunks = getChunksOutside(chunkPosition);
+		for (Chunk chunk : chunks)
+			loadedChunks.remove(chunk);
+		
+		System.out.println(loadedChunks.size());
 	}
 }

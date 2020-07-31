@@ -11,7 +11,6 @@ public class MarchingSquare
 
 	public MarchingSquare(Vector3f position)
 	{
-//		System.out.println(position.x + "," + position.z);
 		this.position = position;
 		this.controls = new ControlNode[4];
 		createControlNodes();

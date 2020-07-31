@@ -15,6 +15,7 @@ public class TerrainController
 	public void handlePlayerMovement(Camera camera)
 	{
 		terrain.loadSurroundedChunks(camera.getChunkPosition());
+		terrain.unloadChunks(camera.getChunkPosition());
 	}
 
 	public Terrain getTerrain()
