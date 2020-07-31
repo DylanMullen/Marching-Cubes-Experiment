@@ -12,8 +12,6 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
-import me.dylanmullen.marchingcubes.util.BufferUtil;
-
 public class Shader
 {
 

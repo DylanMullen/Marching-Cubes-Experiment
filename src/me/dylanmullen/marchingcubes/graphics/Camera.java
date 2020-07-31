@@ -11,24 +11,30 @@ public class Camera
 {
 
 	private Vector3f position;
+	private Vector3f chunkPosition;
+
 	private Vector2f pitchYaw;
 	private KeyboardHandler keyboard;
 
 	private boolean moved;
-	
+	private boolean movedChunk;
+
 	public Camera(KeyboardHandler keyboard)
 	{
 		this.position = new Vector3f(-8, 50, -8);
 		this.pitchYaw = new Vector2f(0, 90);
+		this.chunkPosition = new Vector3f(getChunkCoord(position.x), 0, getChunkCoord(position.z));
 		this.keyboard = keyboard;
 	}
 
 	public void move(Vector3f vec)
 	{
 		position.add(vec);
-		moved=true;
+		moved = true;
+
+		checkChunkMoved();
 	}
-	
+
 	public void rotate()
 	{
 		this.pitchYaw.add(0, 0.1f);
@@ -36,8 +42,21 @@ public class Camera
 
 	public void update()
 	{
-		moved=false;
+		moved = false;
+		movedChunk = false;
 		handleInputs();
+	}
+
+	public void checkChunkMoved()
+	{
+		float xCoord = getChunkCoord(position.x);
+		float zCoord = getChunkCoord(position.z);
+
+		if (chunkPosition.x != xCoord || chunkPosition.y != zCoord)
+		{
+			chunkPosition.set(xCoord, 0, zCoord);
+			movedChunk = true;
+		}
 	}
 
 	private void handleInputs()
@@ -66,15 +85,30 @@ public class Camera
 		matrix.translate(-position.x, -position.y, -position.z);
 		return matrix;
 	}
-	
+
 	public Vector3f getPosition()
 	{
 		return position;
 	}
-	
+
 	public boolean hasMoved()
 	{
 		return moved;
+	}
+
+	public boolean hasMovedChunk()
+	{
+		return movedChunk;
+	}
+
+	public Vector3f getChunkPosition()
+	{
+		return chunkPosition;
+	}
+
+	public int getChunkCoord(float input)
+	{
+		return (int) (input / 16f) * 16 - (input < 0 ? 16 : 0);
 	}
 
 }

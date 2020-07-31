@@ -1,42 +1,20 @@
 package me.dylanmullen.marchingcubes.terrain;
 
-import org.joml.Vector3f;
-
 import me.dylanmullen.marchingcubes.graphics.Camera;
 
 public class TerrainController
 {
 
 	private Terrain terrain;
-	private Camera camera;
 
 	public TerrainController(Camera camera)
 	{
 		this.terrain = new Terrain();
-		this.camera = camera;
 	}
 
-	public void loadSurroundingChunks()
+	public void handlePlayerMovement(Camera camera)
 	{
-		int xCord = (int) (camera.getPosition().x / 16f) * 16 - (camera.getPosition().x < 0 ? 16 : 0);
-		int zCode = (int) (camera.getPosition().z / 16f) * 16 - (camera.getPosition().z < 0 ? 16 : 0);
-		terrain.generateChunk(new Vector3f(xCord, 0, zCode));
-		// Sides
-		terrain.generateChunk(new Vector3f(xCord + 16, 0, zCode));
-		terrain.generateChunk(new Vector3f(xCord - 16, 0, zCode));
-		terrain.generateChunk(new Vector3f(xCord, 0, zCode + 16));
-		terrain.generateChunk(new Vector3f(xCord, 0, zCode - 16));
-
-		// Corners
-		terrain.generateChunk(new Vector3f(xCord + 16, 0, zCode + 16));
-		terrain.generateChunk(new Vector3f(xCord + 16, 0, zCode - 16));
-		terrain.generateChunk(new Vector3f(xCord - 16, 0, zCode + 16));
-		terrain.generateChunk(new Vector3f(xCord - 16, 0, zCode - 16));
-	}
-
-	public Camera getCamera()
-	{
-		return camera;
+		terrain.loadSurroundedChunks(camera.getChunkPosition());
 	}
 
 	public Terrain getTerrain()

@@ -10,9 +10,7 @@ import me.dylanmullen.marchingcubes.generator.MarchingCubeGenerator;
 import me.dylanmullen.marchingcubes.graphics.Camera;
 import me.dylanmullen.marchingcubes.graphics.Renderer;
 import me.dylanmullen.marchingcubes.graphics.Shader;
-import me.dylanmullen.marchingcubes.terrain.Terrain;
 import me.dylanmullen.marchingcubes.terrain.TerrainController;
-import me.dylanmullen.marchingcubes.util.GameObject;
 import me.dylanmullen.marchingcubes.window.Window;
 
 public class MarchingCubes implements Runnable
@@ -58,10 +56,8 @@ public class MarchingCubes implements Runnable
 
 		Renderer render = new Renderer(camera);
 		terrainController = new TerrainController(camera);
-		terrainController.getTerrain().debug();
-		
-		terrainController.loadSurroundingChunks();
-		
+
+		terrainController.handlePlayerMovement(camera);;
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 30.0;
@@ -86,7 +82,7 @@ public class MarchingCubes implements Runnable
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 			else
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-			
+
 			render.renderTerrain(terrainController.getTerrain());
 
 			GLFW.glfwSwapBuffers(this.window.getWindowReference());
@@ -99,8 +95,8 @@ public class MarchingCubes implements Runnable
 	private void update()
 	{
 		camera.update();
-		if(camera.hasMoved())
-			terrainController.loadSurroundingChunks();
+		if (camera.hasMoved() && camera.hasMovedChunk())
+			terrainController.handlePlayerMovement(camera);;
 	}
 
 	private void stop()

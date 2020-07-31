@@ -25,15 +25,35 @@ public class Terrain
 		this.loadedChunks = new ArrayList<>();
 	}
 
-	public void debug()
+	public void loadSurroundedChunks(Vector3f chunkCoords)
 	{
+		generateChunk(chunkCoords);
+		loadSides(chunkCoords);
+		loadCorners(chunkCoords);
 	}
 
-	public void generateChunk(Vector3f position)
+	private void loadSides(Vector3f chunkCoords)
 	{
-		if(isLoaded(position))
+		generateChunk(new Vector3f(chunkCoords.x + 16, 0, chunkCoords.z));
+		generateChunk(new Vector3f(chunkCoords.x - 16, 0, chunkCoords.z));
+		generateChunk(new Vector3f(chunkCoords.x, 0, chunkCoords.z + 16));
+		generateChunk(new Vector3f(chunkCoords.x, 0, chunkCoords.z - 16));
+	}
+	
+	private void loadCorners(Vector3f chunkCoords)
+	{
+		generateChunk(new Vector3f(chunkCoords.x + 16, 0, chunkCoords.z + 16));
+		generateChunk(new Vector3f(chunkCoords.x + 16, 0, chunkCoords.z - 16));
+		generateChunk(new Vector3f(chunkCoords.x - 16, 0, chunkCoords.z + 16));
+		generateChunk(new Vector3f(chunkCoords.x - 16, 0, chunkCoords.z - 16));
+	}
+
+	private void generateChunk(Vector3f position)
+	{
+		if (isLoaded(position))
 			return;
-		
+
+		System.out.println("test");
 		ArrayList<MarchingSquare> squares = generator.createSquares(position, CHUNK_SIZE, CHUNK_SIZE);
 		VAO model = generator.generateMesh(squares);
 		Chunk chunk = new Chunk(position, model);
