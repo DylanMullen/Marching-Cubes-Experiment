@@ -71,7 +71,7 @@ public class MarchingSquare
 
 	public void setValues(float tL, float tR, float bR, float bL)
 	{
-		float surfaceLevel = 0f;
+		float surfaceLevel = -0.02f;
 		if (tL >= surfaceLevel)
 			setActive(0);
 		if (tR >= surfaceLevel)

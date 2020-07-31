@@ -89,13 +89,12 @@ public class Terrain
 	{
 		return (position.x >= high.x && position.x <= low.x) && (position.z >= high.z && position.z <= low.z);
 	}
-
+	
 	public void unloadChunks(Vector3f chunkPosition)
 	{
 		List<Chunk> chunks = getChunksOutside(chunkPosition);
 		for (Chunk chunk : chunks)
 			loadedChunks.remove(chunk);
 		
-		System.out.println(loadedChunks.size());
 	}
 }

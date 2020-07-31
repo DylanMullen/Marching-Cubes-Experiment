@@ -5,7 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import me.dylanmullen.marchingcubes.window.KeyboardHandler;
+import me.dylanmullen.marchingcubes.window.input.KeyboardHandler;
 
 public class Camera
 {

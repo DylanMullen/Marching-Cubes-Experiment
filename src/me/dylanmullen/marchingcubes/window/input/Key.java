@@ -1,4 +1,4 @@
-package me.dylanmullen.marchingcubes.window;
+package me.dylanmullen.marchingcubes.window.input;
 
 public class Key
 {

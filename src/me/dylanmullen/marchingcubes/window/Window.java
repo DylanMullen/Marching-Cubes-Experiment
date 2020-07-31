@@ -11,6 +11,8 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
+import me.dylanmullen.marchingcubes.window.input.InputController;
+
 public class Window
 {
 
@@ -19,7 +21,7 @@ public class Window
 	private String title;
 	private Dimension dimensions;
 	
-	private KeyboardHandler handler;
+	private InputController input;
 
 	public Window(String title, Dimension dim)
 	{
@@ -52,8 +54,7 @@ public class Window
 					(vidmode.height() - pHeight.get(0)) / 2);
 		}
 		
-		this.handler=new KeyboardHandler();
-		glfwSetKeyCallback(this.windowReference, this.handler);
+		this.input=new InputController(windowReference);
 	}
 
 	public void createWindow()
@@ -79,9 +80,9 @@ public class Window
 		return windowReference;
 	}
 	
-	public KeyboardHandler getKeyboardHandler()
+	public InputController getInputController()
 	{
-		return handler;
+		return input;
 	}
 	
 }

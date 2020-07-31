@@ -57,7 +57,8 @@ public class MarchingCubes implements Runnable
 		Renderer render = new Renderer(camera);
 		terrainController = new TerrainController(camera);
 
-		terrainController.handlePlayerMovement(camera);;
+		terrainController.handlePlayerMovement(camera);
+		;
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 30.0;
@@ -78,7 +79,7 @@ public class MarchingCubes implements Runnable
 
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-			if (window.getKeyboardHandler().isPressed(GLFW.GLFW_KEY_X))
+			if (window.getInputController().getKeyboard().isPressed(GLFW.GLFW_KEY_X))
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 			else
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
@@ -96,7 +97,8 @@ public class MarchingCubes implements Runnable
 	{
 		camera.update();
 		if (camera.hasMoved() && camera.hasMovedChunk())
-			terrainController.handlePlayerMovement(camera);;
+			terrainController.handlePlayerMovement(camera);
+		;
 	}
 
 	private void stop()
@@ -117,7 +119,7 @@ public class MarchingCubes implements Runnable
 		this.window = new Window("Marching Cubes", new Dimension((int) WIDTH, (int) HEIGHT));
 		window.createWindow();
 
-		this.camera = new Camera(window.getKeyboardHandler());
+		this.camera = new Camera(window.getInputController().getKeyboard());
 	}
 
 	public boolean isRunning()

@@ -26,7 +26,16 @@ public class NoiseGenerator
 
 	public float generateNoise(int x, int z)
 	{
-		return getInterpolatedNoise(x / 8f, z / 8f);
+		float total = 0;
+		float d=(float)Math.pow(2, 2);
+		
+		for(int i=0;i<3;i++)
+		{
+			float freq = (float)(Math.pow(2, i)/d);
+			total+= getInterpolatedNoise(x*freq, z*freq);
+		}
+		
+		return total;
 	}
 
 	public float getInterpolatedNoise(float x, float y)
