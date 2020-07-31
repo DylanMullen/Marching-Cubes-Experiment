@@ -73,13 +73,13 @@ public class MarchingSquare
 	{
 		float surfaceLevel = -0.02f;
 		if (tL >= surfaceLevel)
-			setActive(0);
+			setActive(tL,0);
 		if (tR >= surfaceLevel)
-			setActive(1);
+			setActive(tR,1);
 		if (bR >= surfaceLevel)
-			setActive(2);
+			setActive(bR,2);
 		if (bL >= surfaceLevel)
-			setActive(3);
+			setActive(bL, 3);
 	}
 
 	public void setConfiguration()
@@ -104,9 +104,10 @@ public class MarchingSquare
 		return configuration;
 	}
 
-	public void setActive(int position)
+	public void setActive(float rawValue, int position)
 	{
 		controls[position].setActive();
+		controls[position].setLength(rawValue);
 	}
 
 	public boolean isActive(int position)

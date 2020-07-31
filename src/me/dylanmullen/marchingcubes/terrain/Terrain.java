@@ -2,7 +2,6 @@ package me.dylanmullen.marchingcubes.terrain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.joml.Vector3f;
@@ -15,7 +14,6 @@ public class Terrain
 {
 
 	private final int CHUNK_SIZE = 16;
-
 	private MarchingCubeGenerator generator;
 
 	private List<Chunk> loadedChunks;
@@ -62,13 +60,7 @@ public class Terrain
 
 	public boolean isLoaded(Vector3f position)
 	{
-		try
-		{
-			return loadedChunks.stream().filter(e -> e.getPosition().equals(position)).findAny().isPresent();
-		} catch (NoSuchElementException e)
-		{
-			return false;
-		}
+		return loadedChunks.stream().filter(e -> e.getPosition().equals(position)).findAny().isPresent();
 	}
 
 	public List<Chunk> getLoadedChunks()
@@ -89,12 +81,12 @@ public class Terrain
 	{
 		return (position.x >= high.x && position.x <= low.x) && (position.z >= high.z && position.z <= low.z);
 	}
-	
+
 	public void unloadChunks(Vector3f chunkPosition)
 	{
 		List<Chunk> chunks = getChunksOutside(chunkPosition);
 		for (Chunk chunk : chunks)
 			loadedChunks.remove(chunk);
-		
+
 	}
 }
