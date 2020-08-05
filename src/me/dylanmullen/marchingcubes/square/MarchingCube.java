@@ -1,6 +1,12 @@
 package me.dylanmullen.marchingcubes.square;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 import org.joml.Vector3f;
+
+import me.dylanmullen.marchingcubes.graphics.VAO;
+import me.dylanmullen.marchingcubes.util.BufferUtil;
 
 public class MarchingCube
 {
@@ -793,9 +799,65 @@ public class MarchingCube
 	{
 		setupBottomFace();
 		setupTopFace();
-		System.out.println(nodes[4].getPosition().y);
-		System.out.println(nodes[4].getAboveY().getPosition().y);
+	}
 
+	public VAO createVAO()
+	{
+		int[] edges = triTable[configuration];
+
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		ArrayList<Integer> indices = new ArrayList<>();
+		for (int i = 0; i < edges.length; i++)
+		{
+			Node node = getNode(edges[i]);
+			if (node == null)
+				break;
+			nodes.add(node);
+		}
+
+		System.out.println(getNode(0).getPosition().y);
+		System.out.println();
+
+		if (nodes.size() == 0)
+			return null;
+
+		ArrayList<Vector3f> vertices = new ArrayList<>();
+
+		for (int i = nodes.size() - 1; i >= 0; i--)
+		{
+			nodes.get(i).setVertexID(vertices.size());
+			indices.add(nodes.get(i).getVertexID());
+			vertices.add(nodes.get(i).getPosition());
+		}
+
+		VAO vao = new VAO();
+		vao.bind();
+		vao.storeData(0, verticesToFloatArray((ArrayList<Vector3f>) vertices));
+		vao.storeIndicesBuffer(indicesToIntArray((ArrayList<Integer>) indices));
+		vao.unbind();
+		return vao;
+	}
+
+	public int[] indicesToIntArray(ArrayList<Integer> indices)
+	{
+		int[] arr = new int[indices.size()];
+		for (int i = 0; i < indices.size(); i++)
+			arr[i] = indices.get(i);
+		return arr;
+	}
+
+	public FloatBuffer verticesToFloatArray(ArrayList<Vector3f> vertices)
+	{
+		float[] points = new float[vertices.size() * 3];
+		int index = 0;
+		for (int i = 0; i < vertices.size(); i++)
+		{
+			points[index] = vertices.get(i).x;
+			points[index + 1] = vertices.get(i).y;
+			points[index + 2] = vertices.get(i).z;
+			index += 3;
+		}
+		return BufferUtil.toFloatBuffer(points);
 	}
 
 	private void setupTopFace()
@@ -905,23 +967,24 @@ public class MarchingCube
 
 	public void setConfiguration()
 	{
-		if (getTopLeftBF().isActive())
-			configuration += 1;
-		if (getTopRightBF().isActive())
-			configuration += 2;
-		if (getBottomRightBF().isActive())
-			configuration += 4;
-		if (getBottomLeftBF().isActive())
-			configuration += 8;
-
-		if (getTopLeftTF().isActive())
-			configuration += 16;
-		if (getTopRightTF().isActive())
-			configuration += 32;
-		if (getBottomRightTF().isActive())
-			configuration += 64;
-		if (getBottomLeftTF().isActive())
-			configuration += 128;
+//		if (getTopLeftBF().isActive())
+		configuration += 1;
+//		if (getTopRightBF().isActive())
+		configuration += 2;
+//		if (getBottomRightBF().isActive())
+//		configuration += 4;
+//		if (getBottomLeftBF().isActive())
+		configuration += 8;
+//
+//		if (getTopLeftTF().isActive())
+//		configuration += 16;
+//		if (getTopRightTF().isActive())
+//		configuration += 32;
+//		if (getBottomRightTF().isActive())
+//		configuration += 64;
+//		if (getBottomLeftTF().isActive())
+//			configuration += 128;
+//		configuration = 1;
 	}
 
 	public Vector3f getPosition()
@@ -931,7 +994,7 @@ public class MarchingCube
 
 	public Vector3f getNodePosition(float xOffset, float yOffset, float zOffset)
 	{
-		Vector3f vec = new Vector3f(position.x + xOffset, position.y + yOffset, position.z + zOffset);
+		Vector3f vec = new Vector3f(xOffset + position.x, yOffset + position.y, zOffset + position.z);
 		return vec;
 	}
 }

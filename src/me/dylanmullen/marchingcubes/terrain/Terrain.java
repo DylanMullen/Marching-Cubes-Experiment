@@ -53,7 +53,7 @@ public class Terrain
 			return;
 
 		ArrayList<MarchingSquare> squares = generator.createSquares(position, CHUNK_SIZE, CHUNK_SIZE);
-		VAO model = generator.generateMesh(squares);
+		VAO model = generator.generateSquareMesh(squares);
 		Chunk chunk = new Chunk(position, model);
 		loadedChunks.add(chunk);
 	}

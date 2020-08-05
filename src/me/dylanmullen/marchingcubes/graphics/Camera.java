@@ -21,8 +21,8 @@ public class Camera
 
 	public Camera(KeyboardHandler keyboard)
 	{
-		this.position = new Vector3f(-8, 50, -8);
-		this.pitchYaw = new Vector2f(0, 90);
+		this.position = new Vector3f(0, 0, 2);
+		this.pitchYaw = new Vector2f(0, 0);
 		this.chunkPosition = new Vector3f(getChunkCoord(position.x), 0, getChunkCoord(position.z));
 		this.keyboard = keyboard;
 	}

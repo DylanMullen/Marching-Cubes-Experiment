@@ -1,6 +1,7 @@
 package me.dylanmullen.marchingcubes.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -50,13 +51,29 @@ public class Renderer
 		shader.stop();
 	}
 
-	private void drawVAO(VAO vao)
+	public void drawCube(VAO vao)
 	{
+		Matrix4f translate = new Matrix4f();
+		translate.translate(0, 0, 0);
+		shader.start();
+		shader.setViewMatrix(camera.getViewMatrix());
+
+		shader.setTransformationMatrix(translate);
+
+		drawVAO(vao);
+
+		shader.stop();
+	}
+
+	public void drawVAO(VAO vao)
+	{
+
 		GL30.glBindVertexArray(vao.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, vao.getCount(), GL11.GL_UNSIGNED_INT, 0);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
+
 	}
 
 	private Matrix4f createProjectionMatrix()

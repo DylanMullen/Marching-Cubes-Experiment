@@ -4,10 +4,10 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import me.dylanmullen.marchingcubes.graphics.VAO;
+import me.dylanmullen.marchingcubes.square.MarchingCube;
 import me.dylanmullen.marchingcubes.square.MarchingSquare;
 import me.dylanmullen.marchingcubes.square.Node;
 import me.dylanmullen.marchingcubes.util.BufferUtil;
@@ -22,7 +22,7 @@ public class MarchingCubeGenerator
 		this.generator = new NoiseGenerator();
 	}
 
-	public VAO generateMesh(ArrayList<MarchingSquare> squares)
+	public VAO generateSquareMesh(ArrayList<MarchingSquare> squares)
 	{
 		VAO vao = new VAO();
 
@@ -40,6 +40,25 @@ public class MarchingCubeGenerator
 		vao.storeIndicesBuffer(indicesToIntArray(indices));
 		vao.unbind();
 
+		return vao;
+	}
+	public VAO generateCubeMesh(ArrayList<MarchingCube> cubes)
+	{
+		VAO vao = new VAO();
+		
+		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		
+		for (MarchingCube square : cubes)
+		{
+			
+		}
+		
+		vao.bind();
+		vao.storeData(0, verticesToFloatArray(vertices));
+		vao.storeIndicesBuffer(indicesToIntArray(indices));
+		vao.unbind();
+		
 		return vao;
 	}
 

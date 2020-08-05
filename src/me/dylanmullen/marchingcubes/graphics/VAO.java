@@ -63,7 +63,7 @@ public class VAO
 	{
 		return vaoID;
 	}
-	
+
 	public int getCount()
 	{
 		return count;
