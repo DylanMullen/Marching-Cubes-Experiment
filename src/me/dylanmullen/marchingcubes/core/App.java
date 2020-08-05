@@ -13,7 +13,7 @@ import me.dylanmullen.marchingcubes.graphics.Shader;
 import me.dylanmullen.marchingcubes.terrain.TerrainController;
 import me.dylanmullen.marchingcubes.window.Window;
 
-public class MarchingCubes implements Runnable
+public class App implements Runnable
 {
 
 	private final float WIDTH = 1280f;
@@ -26,7 +26,7 @@ public class MarchingCubes implements Runnable
 
 	private Camera camera;
 
-	public MarchingCubes()
+	public App()
 	{
 		start();
 	}

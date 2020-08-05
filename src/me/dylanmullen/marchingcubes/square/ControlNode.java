@@ -15,13 +15,24 @@ public class ControlNode extends Node
 		this.nodes = new Node[2];
 		this.active = false;
 		this.right = right;
-		setNodes(right);
+		setNodes(right, false);
 	}
 
-	private void setNodes(boolean right)
+	public ControlNode(Vector3f position, boolean right, boolean _3d)
+	{
+		super(position);
+		this.nodes = new Node[(_3d ? 3 : 2)];
+		this.active = false;
+		this.right = right;
+		setNodes(right, _3d);
+	}
+
+	private void setNodes(boolean right, boolean _3d)
 	{
 		nodes[0] = NodeManager.getInstance().createNode(getPosition().add(0, 0, -0.5f));
 		nodes[1] = NodeManager.getInstance().createNode(getPosition().add((right ? -0.5f : 0.5f), 0, 0));
+		if (_3d)
+			nodes[2] = NodeManager.getInstance().createNode(getPosition().add(0, 0.5f, 0));
 	}
 
 	public Node getAbove()
@@ -32,6 +43,11 @@ public class ControlNode extends Node
 	public Node getRight()
 	{
 		return nodes[1];
+	}
+
+	public Node getAboveY()
+	{
+		return nodes[2];
 	}
 
 	public boolean isActive()
@@ -47,7 +63,6 @@ public class ControlNode extends Node
 	public void setLength(float rawValue)
 	{
 		float distance = getDistance(rawValue);
-		System.out.println(distance);
 		nodes[0].getPosition().set(0, 0, -distance);
 		nodes[1].getPosition().set((right ? -distance : distance), 0, 0);
 	}
