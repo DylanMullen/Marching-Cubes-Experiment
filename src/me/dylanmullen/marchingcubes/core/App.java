@@ -1,6 +1,7 @@
 package me.dylanmullen.marchingcubes.core;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -50,25 +51,32 @@ public class App implements Runnable
 	TerrainController terrainController;
 
 	VAO test;
+	ArrayList<MarchingCube> cubes;
 
 	public void run()
 	{
 		init();
 		GL.createCapabilities();
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
 
 		this.shader = new Shader("test.vert", "test.frag");
 		this.shader.bindAttrib(0, "position");
 
 		Renderer render = new Renderer(camera);
-		terrainController = new TerrainController(camera);
+//		terrainController = new TerrainController(camera);
+//
+//		terrainController.handlePlayerMovement(camera);
+//		;
 
-		terrainController.handlePlayerMovement(camera);
-		;
+//		MarchingCube cube = new MarchingCube(new Vector3f(0.5f, 0.5f, 0.5f));
+//		cube.setConfiguration();
+//
+//		this.test = cube.createVAO();
 
-		MarchingCube cube = new MarchingCube(new Vector3f(0.5f, 0.5f, 0.5f));
-		cube.setConfiguration();
-
-		this.test = cube.createVAO();
+		MarchingCubeGenerator gen = new MarchingCubeGenerator();
+		this.cubes = gen.createCubes(new Vector3f(0, 0, 0), 8, 1);
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 30.0;
@@ -87,7 +95,7 @@ public class App implements Runnable
 				delta--;
 			}
 
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			if (window.getInputController().getKeyboard().isPressed(GLFW.GLFW_KEY_X))
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
@@ -95,8 +103,10 @@ public class App implements Runnable
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
 //			render.renderTerrain(terrainController.getTerrain());
-			render.drawCube(test);
-			
+//			render.drawCube(test);
+
+			render(render);
+
 			GLFW.glfwSwapBuffers(this.window.getWindowReference());
 			GLFW.glfwPollEvents();
 		}
@@ -110,6 +120,24 @@ public class App implements Runnable
 //		if (camera.hasMoved() && camera.hasMovedChunk())
 //			terrainController.handlePlayerMovement(camera);
 //		;
+
+	}
+
+	private void render(Renderer render)
+	{
+		int count =0;
+		for(MarchingCube cube : cubes)
+		{
+			if(cube.getVao()==null)
+			{
+				count++;
+				continue;
+			}
+			
+			render.drawCube(cube);;
+			
+		}
+//		System.out.println(count);
 	}
 
 	private void stop()

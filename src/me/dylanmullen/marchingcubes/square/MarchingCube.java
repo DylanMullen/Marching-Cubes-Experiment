@@ -3,8 +3,10 @@ package me.dylanmullen.marchingcubes.square;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import org.joml.Math;
 import org.joml.Vector3f;
 
+import me.dylanmullen.marchingcubes.generator.NoiseGenerator;
 import me.dylanmullen.marchingcubes.graphics.VAO;
 import me.dylanmullen.marchingcubes.util.BufferUtil;
 
@@ -15,6 +17,10 @@ public class MarchingCube
 
 	private ControlNode[] nodes;
 	private int configuration;
+	
+	private Vector3f colour;
+	
+	private VAO vao;
 
 	private int[][] triTable = new int[][]
 	{
@@ -792,6 +798,10 @@ public class MarchingCube
 	{
 		this.position = position;
 		this.nodes = new ControlNode[8];
+		System.out.println(position.x + ": " + position.z);
+		
+		this.colour = new Vector3f((float) Math.random(), (float) Math.random(), (float) Math.random());
+
 		init();
 	}
 
@@ -815,9 +825,6 @@ public class MarchingCube
 			nodes.add(node);
 		}
 
-		System.out.println(getNode(0).getPosition().y);
-		System.out.println();
-
 		if (nodes.size() == 0)
 			return null;
 
@@ -830,7 +837,7 @@ public class MarchingCube
 			vertices.add(nodes.get(i).getPosition());
 		}
 
-		VAO vao = new VAO();
+		vao = new VAO();
 		vao.bind();
 		vao.storeData(0, verticesToFloatArray((ArrayList<Vector3f>) vertices));
 		vao.storeIndicesBuffer(indicesToIntArray((ArrayList<Integer>) indices));
@@ -864,26 +871,27 @@ public class MarchingCube
 	{
 		// TOP Face
 		// Top Left
-		nodes[0] = new ControlNode(getNodePosition(-0.5f, 0.5f, -0.5f), false, true);
+//		getNodePosition(-0.5f, 0.5f, -0.5f)
+		nodes[0] = new ControlNode(new Vector3f(-0.5f,0.5f,-0.5f), false, true);
 		// Top Right
-		nodes[1] = new ControlNode(getNodePosition(0.5f, 0.5f, -0.5f), true, true);
+		nodes[1] = new ControlNode(new Vector3f(0.5f, 0.5f, -0.5f), true, true);
 		// Bottom Left
-		nodes[2] = new ControlNode(getNodePosition(-0.5f, 0.5f, 0.5f), false, true);
+		nodes[2] = new ControlNode(new Vector3f(-0.5f, 0.5f, 0.5f), false, true);
 		// Bottom Right
-		nodes[3] = new ControlNode(getNodePosition(0.5f, 0.5f, 0.5f), false, true);
+		nodes[3] = new ControlNode(new Vector3f(0.5f, 0.5f, 0.5f), false, true);
 	}
 
 	private void setupBottomFace()
 	{
 		// Bottom Face
 		// Top Left
-		nodes[4] = new ControlNode(getNodePosition(-0.5f, -0.5f, -0.5f), false, true);
+		nodes[4] = new ControlNode(new Vector3f(-0.5f, -0.5f, -0.5f), false, true);
 		// Top Right
-		nodes[5] = new ControlNode(getNodePosition(0.5f, -0.5f, -0.5f), true, true);
+		nodes[5] = new ControlNode(new Vector3f(0.5f, -0.5f, -0.5f), true, true);
 		// Bottom Left
-		nodes[6] = new ControlNode(getNodePosition(-0.5f, -0.5f, 0.5f), false, true);
+		nodes[6] = new ControlNode(new Vector3f(-0.5f, -0.5f, 0.5f), false, true);
 		// Bottom Right
-		nodes[7] = new ControlNode(getNodePosition(0.5f, -0.5f, 0.5f), false, true);
+		nodes[7] = new ControlNode(new Vector3f(0.5f, -0.5f, 0.5f), false, true);
 	}
 
 	// Getters
@@ -965,26 +973,36 @@ public class MarchingCube
 		return configuration;
 	}
 
+	public void setValues(NoiseGenerator generator)
+	{
+		for (int i = 0; i < nodes.length - 1; i++)
+			nodes[i].setNodeValue(generator);
+		
+//		getBottomLeftTF().setActive();
+//		getBottomRightTF().setActive();
+//		getTopLeftTF().setActive();
+//		getTopRightTF().setActive();
+	}
+
 	public void setConfiguration()
 	{
-//		if (getTopLeftBF().isActive())
-		configuration += 1;
-//		if (getTopRightBF().isActive())
-		configuration += 2;
-//		if (getBottomRightBF().isActive())
-//		configuration += 4;
-//		if (getBottomLeftBF().isActive())
-		configuration += 8;
-//
-//		if (getTopLeftTF().isActive())
-//		configuration += 16;
-//		if (getTopRightTF().isActive())
-//		configuration += 32;
-//		if (getBottomRightTF().isActive())
-//		configuration += 64;
-//		if (getBottomLeftTF().isActive())
-//			configuration += 128;
-//		configuration = 1;
+		if (getTopLeftBF().isActive())
+			configuration += 1;
+		if (getTopRightBF().isActive())
+			configuration += 2;
+		if (getBottomRightBF().isActive())
+			configuration += 4;
+		if (getBottomLeftBF().isActive())
+			configuration += 8;
+
+		if (getTopLeftTF().isActive())
+			configuration += 16;
+		if (getTopRightTF().isActive())
+			configuration += 32;
+		if (getBottomRightTF().isActive())
+			configuration += 64;
+		if (getBottomLeftTF().isActive())
+			configuration += 128;
 	}
 
 	public Vector3f getPosition()
@@ -996,5 +1014,15 @@ public class MarchingCube
 	{
 		Vector3f vec = new Vector3f(xOffset + position.x, yOffset + position.y, zOffset + position.z);
 		return vec;
+	}
+	
+	public VAO getVao()
+	{
+		return vao;
+	}
+	
+	public Vector3f getColour()
+	{
+		return colour;
 	}
 }

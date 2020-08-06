@@ -1,11 +1,13 @@
 package me.dylanmullen.marchingcubes.graphics;
 
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import me.dylanmullen.marchingcubes.square.MarchingCube;
 import me.dylanmullen.marchingcubes.terrain.Chunk;
 import me.dylanmullen.marchingcubes.terrain.Terrain;
 
@@ -51,29 +53,30 @@ public class Renderer
 		shader.stop();
 	}
 
-	public void drawCube(VAO vao)
+	public void drawCube(MarchingCube vao)
 	{
+		if(vao.getVao() ==null)
+			return;
 		Matrix4f translate = new Matrix4f();
-		translate.translate(0, 0, 0);
+		translate.translate(vao.getPosition());
 		shader.start();
 		shader.setViewMatrix(camera.getViewMatrix());
 
 		shader.setTransformationMatrix(translate);
+		shader.setVector3f("chunkColour", vao.getColour());
 
-		drawVAO(vao);
+		drawVAO(vao.getVao());
 
 		shader.stop();
 	}
 
 	public void drawVAO(VAO vao)
 	{
-
 		GL30.glBindVertexArray(vao.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, vao.getCount(), GL11.GL_UNSIGNED_INT, 0);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
-
 	}
 
 	private Matrix4f createProjectionMatrix()

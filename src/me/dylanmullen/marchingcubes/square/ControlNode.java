@@ -2,12 +2,16 @@ package me.dylanmullen.marchingcubes.square;
 
 import org.joml.Vector3f;
 
+import me.dylanmullen.marchingcubes.generator.NoiseGenerator;
+
 public class ControlNode extends Node
 {
 
 	private Node[] nodes;
 	private boolean active;
 	private boolean right;
+
+	private float nodeValue;
 
 	public ControlNode(Vector3f position, boolean right)
 	{
@@ -65,6 +69,15 @@ public class ControlNode extends Node
 		float distance = getDistance(rawValue);
 		nodes[0].getPosition().set(0, 0, -distance);
 		nodes[1].getPosition().set((right ? -distance : distance), 0, 0);
+	}
+
+	public void setNodeValue(NoiseGenerator generator)
+	{
+		Vector3f pos = getPosition();
+		this.nodeValue = generator.generate3DNoise(pos.x, pos.y, pos.z);
+
+		if (nodeValue > 0f)
+			setActive();
 	}
 
 	private float getDistance(float rawValue)

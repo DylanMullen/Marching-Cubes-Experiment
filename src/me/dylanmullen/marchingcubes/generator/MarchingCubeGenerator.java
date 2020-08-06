@@ -42,23 +42,24 @@ public class MarchingCubeGenerator
 
 		return vao;
 	}
+
 	public VAO generateCubeMesh(ArrayList<MarchingCube> cubes)
 	{
 		VAO vao = new VAO();
-		
+
 		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
-		
+
 		for (MarchingCube square : cubes)
 		{
-			
+
 		}
-		
+
 		vao.bind();
 		vao.storeData(0, verticesToFloatArray(vertices));
 		vao.storeIndicesBuffer(indicesToIntArray(indices));
 		vao.unbind();
-		
+
 		return vao;
 	}
 
@@ -218,6 +219,24 @@ public class MarchingCubeGenerator
 			}
 
 		return squares;
+	}
+
+	public ArrayList<MarchingCube> createCubes(Vector3f position, int width, int height)
+	{
+		ArrayList<MarchingCube> cubes = new ArrayList<>();
+
+		for (int y = 0; y < height; y++)
+			for (int z = 0; z < width; z++)
+				for (int x = 0; x < width; x++)
+				{
+					MarchingCube cube = new MarchingCube(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f));
+					cube.setValues(generator);
+					cube.setConfiguration();
+					cube.createVAO();
+					cubes.add(cube);
+				}
+
+		return cubes;
 	}
 
 	public float getValue(int x, int z)
