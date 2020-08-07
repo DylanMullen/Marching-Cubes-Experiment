@@ -5,7 +5,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import me.dylanmullen.marchingcubes.window.input.InputController;
 import me.dylanmullen.marchingcubes.window.input.KeyboardHandler;
+import me.dylanmullen.marchingcubes.window.input.MouseHandler;
 
 public class Camera
 {
@@ -15,16 +17,18 @@ public class Camera
 
 	private Vector2f pitchYaw;
 	private KeyboardHandler keyboard;
+	private MouseHandler mouse;
 
 	private boolean moved;
 	private boolean movedChunk;
 
-	public Camera(KeyboardHandler keyboard)
+	public Camera(InputController input)
 	{
-		this.position = new Vector3f(0, 0, 2);
-		this.pitchYaw = new Vector2f(0, 0);
+		this.position = new Vector3f(8, 20, 8);
+		this.pitchYaw = new Vector2f(0, 90);
 		this.chunkPosition = new Vector3f(getChunkCoord(position.x), 0, getChunkCoord(position.z));
-		this.keyboard = keyboard;
+		this.keyboard = input.getKeyboard();
+		this.mouse=input.getMouse();
 	}
 
 	public void move(Vector3f vec)
@@ -37,7 +41,7 @@ public class Camera
 
 	public void rotate()
 	{
-		this.pitchYaw.add(0, 0.1f);
+		this.pitchYaw.add(0.5f, 0);
 	}
 
 	public void update()
@@ -61,6 +65,7 @@ public class Camera
 
 	private void handleInputs()
 	{
+//		calculateYaw();
 		if (keyboard.isPressed(GLFW.GLFW_KEY_SPACE))
 			move(new Vector3f(0f, 0.5f, 0f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT))
@@ -73,8 +78,21 @@ public class Camera
 			move(new Vector3f(0f, 0f, 0.5f));
 		if (keyboard.isPressed(GLFW.GLFW_KEY_W))
 			move(new Vector3f(0f, 0f, -0.5f));
-		if (keyboard.isPressed(GLFW.GLFW_KEY_LEFT_CONTROL))
-			rotate();
+	}
+	
+	private void calculateYaw()
+	{
+		if(mouse.isPressed(GLFW.GLFW_MOUSE_BUTTON_1))
+		{
+			float change = mouse.getXChange();
+			this.pitchYaw.add(-change,0);
+		}
+		if(mouse.isPressed(GLFW.GLFW_MOUSE_BUTTON_2))
+		{
+			float change = mouse.getXChange();
+			this.pitchYaw.add(0,-change);
+		}
+		
 	}
 
 	public Matrix4f getViewMatrix()
@@ -82,6 +100,7 @@ public class Camera
 		Matrix4f matrix = new Matrix4f();
 		matrix.identity();
 		matrix.rotate((float) Math.toRadians(pitchYaw.y), new Vector3f(1, 0, 0));
+		matrix.rotate((float) Math.toRadians(pitchYaw.x), new Vector3f(0, 1, 0));
 		matrix.translate(-position.x, -position.y, -position.z);
 		return matrix;
 	}

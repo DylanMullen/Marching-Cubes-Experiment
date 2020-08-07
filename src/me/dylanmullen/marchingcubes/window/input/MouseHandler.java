@@ -15,11 +15,13 @@ public class MouseHandler
 
 	private List<Button> buttons;
 	private Vector2f mousePosition;
+	private Vector2f lastPosition;
 
 	public MouseHandler(long windowRef)
 	{
 		this.windowRef = windowRef;
 		this.mousePosition = new Vector2f();
+		this.lastPosition=new Vector2f();
 		this.buttons = new ArrayList<Button>();
 		init();
 	}
@@ -46,18 +48,46 @@ public class MouseHandler
 			public void invoke(long window, double xpos, double ypos)
 			{
 				if (mousePosition.x != xpos || mousePosition.y != ypos)
+				{
+					if(lastPosition.x!=xpos || lastPosition.y !=ypos)
+						lastPosition.set(mousePosition.x,mousePosition.x);
 					mousePosition.set(xpos, ypos);
+				}
 			}
 		});
+	}
+	
+	public boolean isPressed(int code)
+	{
+		Button button = getMouseButton(code);
+		if(button ==null)
+			return false;
+		else
+			return button.isClicked();
 	}
 
 	private Button getMouseButton(int code)
 	{
-		return buttons.stream().filter(e -> e.getButtonCode() == code).findFirst().get();
+		try
+		{
+			return buttons.stream().filter(e -> e.getButtonCode() == code).findFirst().get();
+		}catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 	private boolean isButton(int code)
 	{
 		return buttons.stream().filter(e -> e.getButtonCode() == code).findFirst().isPresent();
+	}
+	
+	public float getXChange()
+	{
+		return lastPosition.x-mousePosition.x;
+	}
+	public float getYChange()
+	{
+		return lastPosition.y-mousePosition.y;
 	}
 }

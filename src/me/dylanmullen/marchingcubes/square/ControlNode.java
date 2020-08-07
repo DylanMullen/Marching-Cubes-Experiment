@@ -71,13 +71,19 @@ public class ControlNode extends Node
 		nodes[1].getPosition().set((right ? -distance : distance), 0, 0);
 	}
 
-	public void setNodeValue(NoiseGenerator generator)
+	public void setNodeValue(float value)
 	{
-		Vector3f pos = getPosition();
-		this.nodeValue = generator.generate3DNoise(pos.x, pos.y, pos.z);
-
-		if (nodeValue > 0f)
+		this.nodeValue = value;
+		
+		if(nodeValue>=-0.02)
+		{
 			setActive();
+		}
+	}
+	
+	public float getNodeValue()
+	{
+		return nodeValue;
 	}
 
 	private float getDistance(float rawValue)

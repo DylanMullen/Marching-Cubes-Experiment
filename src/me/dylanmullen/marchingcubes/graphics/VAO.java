@@ -49,6 +49,13 @@ public class VAO
 		vbos.add(vboID);
 	}
 
+	public void storeVertices(FloatBuffer buffer, int count)
+	{
+		storeData(0, buffer);
+		this.count = count;
+		System.out.println(count);
+	}
+
 	public void storeIndicesBuffer(int[] indices)
 	{
 		int vboID = GL15.glGenBuffers();

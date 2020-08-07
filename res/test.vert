@@ -16,6 +16,6 @@ float rand(vec2 co){
 void main(void){
 	gl_Position = projectionMatrix * viewMat * modelMat * vec4(position,1.0);
 	float random = rand(vec2(position.xy));
-	colour = chunkColour;
+	colour =chunkColour;
 }
 

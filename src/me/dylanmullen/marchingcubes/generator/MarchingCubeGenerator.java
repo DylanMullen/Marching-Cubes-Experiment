@@ -11,15 +11,16 @@ import me.dylanmullen.marchingcubes.square.MarchingCube;
 import me.dylanmullen.marchingcubes.square.MarchingSquare;
 import me.dylanmullen.marchingcubes.square.Node;
 import me.dylanmullen.marchingcubes.util.BufferUtil;
+import me.dylanmullen.marchingcubes.util.Table;
 
 public class MarchingCubeGenerator
 {
 
-	private NoiseGenerator generator;
+	private OpenSimplexNoise generator;
 
 	public MarchingCubeGenerator()
 	{
-		this.generator = new NoiseGenerator();
+		this.generator = new OpenSimplexNoise();
 	}
 
 	public VAO generateSquareMesh(ArrayList<MarchingSquare> squares)
@@ -50,17 +51,97 @@ public class MarchingCubeGenerator
 		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 
-		for (MarchingCube square : cubes)
+		for (MarchingCube cube : cubes)
 		{
-
+			int cubeIndex = calculateIndex(cube);
+			if (Table.lookupEdgeTable(cubeIndex) == 0)
+				continue;
+			Node[] nodes = getNodes(cube, cubeIndex);
+			createTriangles(cubeIndex, vertices, indices, nodes);
 		}
 
 		vao.bind();
-		vao.storeData(0, verticesToFloatArray(vertices));
+		vao.storeVertices(verticesToFloatArray(vertices), vertices.size() / 3);
 		vao.storeIndicesBuffer(indicesToIntArray(indices));
 		vao.unbind();
 
 		return vao;
+	}
+
+	private void createTriangles(int index, ArrayList<Vector3f> verts, ArrayList<Integer> indices, Node[] nodes)
+	{
+		for (Node node : nodes)
+		{
+			if (node == null)
+				continue;
+			node.setVertexID(verts.size());
+			verts.add(node.getPosition());
+		}
+
+		for (int i = 0; Table.triTable[index][i] != -1; i += 3)
+		{
+			indices.add(nodes[Table.triTable[index][i]].getVertexID());
+			indices.add(nodes[Table.triTable[index][i + 1]].getVertexID());
+			indices.add(nodes[Table.triTable[index][i + 2]].getVertexID());
+		}
+
+	}
+
+	private Node[] getNodes(MarchingCube cube, int cubeIndex)
+	{
+		int value = Table.lookupEdgeTable(cubeIndex);
+		Node[] nodes = new Node[12];
+
+		if ((value & 1) != 0)
+			nodes[0] = cube.getTopLeftBF().getRight();
+		if ((value & 2) != 0)
+			nodes[1] = cube.getBottomRightBF().getAbove();
+		if ((value & 4) != 0)
+			nodes[2] = cube.getBottomLeftBF().getRight();
+		if ((value & 8) != 0)
+			nodes[3] = cube.getBottomLeftBF().getAbove();
+		if ((value & 16) != 0)
+			nodes[4] = cube.getTopLeftTF().getRight();
+		if ((value & 32) != 0)
+			nodes[5] = cube.getBottomRightTF().getAbove();
+		if ((value & 64) != 0)
+			nodes[6] = cube.getBottomLeftTF().getRight();
+		if ((value & 128) != 0)
+			nodes[7] = cube.getBottomLeftTF().getAbove();
+		if ((value & 256) != 0)
+			nodes[8] = cube.getTopLeftBF().getAboveY();
+		if ((value & 512) != 0)
+			nodes[9] = cube.getTopRightBF().getAboveY();
+		if ((value & 1024) != 0)
+			nodes[10] = cube.getBottomRightBF().getAboveY();
+		if ((value & 2048) != 0)
+			nodes[11] = cube.getBottomLeftBF().getAboveY();
+
+		return nodes;
+	}
+
+	private int calculateIndex(MarchingCube cube)
+	{
+		int index = 0;
+
+		if (cube.getTopLeftBF().isActive())
+			index |= 1;
+		if (cube.getTopRightBF().isActive())
+			index |= 2;
+		if (cube.getBottomRightBF().isActive())
+			index |= 4;
+		if (cube.getBottomLeftBF().isActive())
+			index |= 8;
+
+		if (cube.getTopLeftTF().isActive())
+			index |= 16;
+		if (cube.getTopRightTF().isActive())
+			index |= 32;
+		if (cube.getBottomRightTF().isActive())
+			index |= 64;
+		if (cube.getBottomLeftTF().isActive())
+			index |= 128;
+		return index;
 	}
 
 	private List<Node> getNodes(MarchingSquare square)
@@ -171,6 +252,19 @@ public class MarchingCubeGenerator
 		}
 	}
 
+	public void addVertices(List<Vector3f> vertices, Node[] nodes)
+	{
+		for (int i = 0; i < nodes.length; i++)
+		{
+			if (nodes[i] == null)
+				continue;
+			if (nodes[i].getVertexID() != -1)
+				continue;
+			nodes[i].setVertexID(vertices.size());
+			vertices.add(nodes[i].getPosition());
+		}
+	}
+
 	public void addIndices(ArrayList<Integer> indices, Node... nodes)
 	{
 		indices.add(nodes[0].getVertexID());
@@ -224,24 +318,22 @@ public class MarchingCubeGenerator
 	public ArrayList<MarchingCube> createCubes(Vector3f position, int width, int height)
 	{
 		ArrayList<MarchingCube> cubes = new ArrayList<>();
+		OpenSimplexNoise noise = new OpenSimplexNoise();
 
 		for (int y = 0; y < height; y++)
-			for (int z = 0; z < width; z++)
+			for (int z = 0; z < 1; z++)
 				for (int x = 0; x < width; x++)
 				{
-					MarchingCube cube = new MarchingCube(new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f));
-					cube.setValues(generator);
-					cube.setConfiguration();
-					cube.createVAO();
+					MarchingCube cube = new MarchingCube(new Vector3f(x, y, z));
+//					cube.setValues(noise);
 					cubes.add(cube);
 				}
-
 		return cubes;
 	}
 
 	public float getValue(int x, int z)
 	{
-		return generator.generateNoise(x, z);
+		return (float) generator.eval(x, z);
 	}
 
 }

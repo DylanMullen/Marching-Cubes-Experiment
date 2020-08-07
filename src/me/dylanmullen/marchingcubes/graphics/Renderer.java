@@ -1,8 +1,9 @@
 package me.dylanmullen.marchingcubes.graphics;
 
+import java.util.ArrayList;
+
 import org.joml.Math;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -50,23 +51,6 @@ public class Renderer
 
 			drawVAO(chunk.getModel());
 		}
-		shader.stop();
-	}
-
-	public void drawCube(MarchingCube vao)
-	{
-		if(vao.getVao() ==null)
-			return;
-		Matrix4f translate = new Matrix4f();
-		translate.translate(vao.getPosition());
-		shader.start();
-		shader.setViewMatrix(camera.getViewMatrix());
-
-		shader.setTransformationMatrix(translate);
-		shader.setVector3f("chunkColour", vao.getColour());
-
-		drawVAO(vao.getVao());
-
 		shader.stop();
 	}
 
